@@ -1,15 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Recipe Generator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Generator | Maha Recipe Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header img {
+      width: 100%;
+      max-width: 1000px;
+      height: auto;
+      margin-top: 20px;
+    }
+
+    nav {
+      margin: 20px 0 40px;
+    }
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: orange;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 20px 0;
+    }
+
+    .generator-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    input, select, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: orange;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: darkorange;
+    }
+
+    footer {
+      background: #333;
+      color: white;
+      padding: 30px 20px;
+      margin-top: 40px;
+    }
+    footer a {
+      color: orange;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+    footer a:hover {
+      color: white;
+    }
+    .footer-social {
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
-<div style="text-align:center;margin-top: 20px;"><img src="C:\Users\Admin\Downloads\logo.png" width="1000" height="250"></div>
 
-<div style="text-align:center;margin-top: 20px;">
-<a style="padding-right:20px"href="index.html">| Home |</a>
-<a style="padding-right:20px"href="Recipe.html">| Recipe generator |</a>
-<a style="padding-right:20px"href="about.html">| About |</a>
+<header>
+  <!-- Keep logo in same folder as this file -->
+  <img src="logo.png" alt="Maha Recipe Hub Logo">
+</header>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="Recipe.html">Recipe Generator</a>
+  <a href="about.html">About</a>
+</nav>
+
+<div class="generator-container">
+  <h1>🍲 Recipe Generator</h1>
+  <p>Enter ingredients you have, and we’ll suggest Maharashtrian recipes for you!</p>
+
+  <!-- Simple input form -->
+  <input type="text" id="ingredients" placeholder="Enter ingredients (e.g., potato, onion)">
+  <button onclick="generateRecipe()">Generate Recipe</button>
+
+  <!-- Result area -->
+  <div id="recipeResult" style="margin-top:20px; font-size:1.2rem;"></div>
 </div>
+
+<footer>
+  <p>&copy; 2025 Maha Recipe Hub | All Rights Reserved</p>
+  <p>Contact us: <a href="mailto:info@maharecipehub.com">info@maharecipehub.com</a></p>
+  <div class="footer-social">
+    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+  </div>
+</footer>
+
+<script>
+  function generateRecipe() {
+    let input = document.getElementById("ingredients").value.toLowerCase();
+    let result = "";
+
+    if (input.includes("potato") && input.includes("onion")) {
+      result = "You can make <b>Batata Bhaji</b> or <b>Aloo Poha</b>!";
+    } else if (input.includes("rice") && input.includes("curd")) {
+      result = "You can prepare <b>Curd Rice</b> (with Maharashtrian twist).";
+    } else if (input.includes("sabudana")) {
+      result = "How about <b>Sabudana Khichdi</b>? Perfect fasting food!";
+    } else {
+      result = "Sorry, no exact match. Try entering common Maharashtrian ingredients!";
+    }
+
+    document.getElementById("recipeResult").innerHTML = result;
+  }
+</script>
+
 </body>
 </html>
+
+

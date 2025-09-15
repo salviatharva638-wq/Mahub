@@ -5,7 +5,8 @@
     "ingredients": ["Flattened rice", "Onion", "Peanuts"],
     "time": 15,
     "calories": 250,
-    "steps": "Wash poha, fry onion, mix spices and peanuts."
+    "steps": "Wash poha, fry onion, mix spices and peanuts.",
+    "image": "images/poha.jpg"
   },
   {
     "name": "Misal Pav",
@@ -13,7 +14,8 @@
     "ingredients": ["Sprouts", "Onion", "Spices"],
     "time": 40,
     "calories": 350,
-    "steps": "Cook sprouts, make spicy curry, serve with pav."
+    "steps": "Cook sprouts, make spicy curry, serve with pav.",
+    "image": "images/misal.jpg"
   },
   {
     "name": "Mutton Rassa",
@@ -21,7 +23,8 @@
     "ingredients": ["Mutton", "Onion", "Tomato", "Spices"],
     "time": 90,
     "calories": 600,
-    "steps": "Cook mutton with spices to make spicy curry."
+    "steps": "Cook mutton with spices to make spicy curry.",
+    "image": "images/mutton.jpg"
   },
   {
     "name": "Puran Poli",
@@ -29,7 +32,8 @@
     "ingredients": ["Chana dal", "Jaggery", "Wheat flour"],
     "time": 120,
     "calories": 400,
-    "steps": "Make stuffing with dal & jaggery, roll into poli."
+    "steps": "Make stuffing with dal & jaggery, roll into poli.",
+    "image": "images/puranpoli.jpg"
   },
   {
     "name": "Ukdiche Modak",
@@ -37,6 +41,7 @@
     "ingredients": ["Rice flour", "Coconut", "Jaggery"],
     "time": 60,
     "calories": 300,
-    "steps": "Make rice dough, fill with coconut-jaggery, steam."
+    "steps": "Make rice dough, fill with coconut-jaggery, steam.",
+    "image": "images/modak.jpg"
   }
 ]

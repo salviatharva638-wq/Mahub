@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Poha",
+    "type": "Breakfast",
+    "ingredients": ["Flattened rice", "Onion", "Peanuts"],
+    "time": 15,
+    "calories": 250,
+    "steps": "Wash poha, fry onion, mix spices and peanuts."
+  },
+  {
+    "name": "Misal Pav",
+    "type": "Snack",
+    "ingredients": ["Sprouts", "Onion", "Spices"],
+    "time": 40,
+    "calories": 350,
+    "steps": "Cook sprouts, make spicy curry, serve with pav."
+  },
+  {
+    "name": "Mutton Rassa",
+    "type": "Main Course",
+    "ingredients": ["Mutton", "Onion", "Tomato", "Spices"],
+    "time": 90,
+    "calories": 600,
+    "steps": "Cook mutton with spices to make spicy curry."
+  },
+  {
+    "name": "Puran Poli",
+    "type": "Sweet",
+    "ingredients": ["Chana dal", "Jaggery", "Wheat flour"],
+    "time": 120,
+    "calories": 400,
+    "steps": "Make stuffing with dal & jaggery, roll into poli."
+  },
+  {
+    "name": "Ukdiche Modak",
+    "type": "Sweet",
+    "ingredients": ["Rice flour", "Coconut", "Jaggery"],
+    "time": 60,
+    "calories": 300,
+    "steps": "Make rice dough, fill with coconut-jaggery, steam."
+  }
+]

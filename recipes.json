@@ -6,7 +6,7 @@
     "time": 15,
     "calories": 250,
     "steps": "Wash poha, fry onion, mix spices and peanuts.",
-    "image": "images/poha.jpg"
+    "image": "Pohe.png"
   },
   {
     "name": "Misal Pav",
@@ -15,7 +15,7 @@
     "time": 40,
     "calories": 350,
     "steps": "Cook sprouts, make spicy curry, serve with pav.",
-    "image": "images/misal.jpg"
+    "image": "Misal Pav.png"
   },
   {
     "name": "Mutton Rassa",
@@ -24,7 +24,7 @@
     "time": 90,
     "calories": 600,
     "steps": "Cook mutton with spices to make spicy curry.",
-    "image": "images/mutton.jpg"
+    "image": "Kolhapuri MuttonRassa.png"
   },
   {
     "name": "Puran Poli",
@@ -33,7 +33,7 @@
     "time": 120,
     "calories": 400,
     "steps": "Make stuffing with dal & jaggery, roll into poli.",
-    "image": "images/puranpoli.jpg"
+    "image": "Puran Poli.png"
   },
   {
     "name": "Ukdiche Modak",
@@ -42,6 +42,6 @@
     "time": 60,
     "calories": 300,
     "steps": "Make rice dough, fill with coconut-jaggery, steam.",
-    "image": "images/modak.jpg"
+    "image": "Ukidiche modak.png"
   }
 ]

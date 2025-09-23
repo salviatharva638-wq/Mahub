@@ -1,68 +1,133 @@
 [
-  {
-    "name": "Poha",
-    "type": "Breakfast",
-     "ingredients": [
-    "Poha",
-    "Onion",
-    "Green chili",
-    "Curry leaves",
-    "Mustard seeds",
-    "Turmeric",
-    "Peanuts",
-    "Coriander",
-    "Lemon",
-    "Salt",
-    "Sugar"
-  ],
-    "time": 15,
-    "calories": 250,
-    "steps": [
-    "Rinse poha in water 1–2 times, drain, sprinkle little salt and sugar, keep aside.",
-    "Heat oil, fry peanuts till crisp, keep aside.",
-    "In the same oil, add mustard seeds, curry leaves, chopped onion, green chili, turmeric.",
-    "Add soaked poha, mix gently, cook 2–3 min on low flame.",
-    "Add fried peanuts, lemon juice, chopped coriander, mix.",
-    "Serve hot with sev or grated coconut."
+    {
+      "id": 1,
+      "title": "Poha",
+      "type": "Snack",
+      "prep_time": "10 min",
+      "cook_time": "15 min",
+      "calories": 180,
+      "ingredients": [
+        { "name": "Flattened rice (poha)", "quantity": "2 cups" },
+        { "name": "Onion", "quantity": "1, chopped" },
+        { "name": "Green chilies", "quantity": "2, chopped" },
+        { "name": "Curry leaves", "quantity": "8–10" },
+        { "name": "Mustard seeds", "quantity": "1 tsp" },
+        { "name": "Peanuts", "quantity": "2 tbsp" },
+        { "name": "Turmeric powder", "quantity": "1/2 tsp" },
+        { "name": "Salt", "quantity": "to taste" },
+        { "name": "Lemon juice", "quantity": "1 tbsp" },
+        { "name": "Coriander leaves", "quantity": "for garnish" }
+      ],
+      "steps": [
+        "Wash poha and drain water, keep aside.",
+        "Heat oil, add mustard seeds, curry leaves, and peanuts.",
+        "Add onion and green chilies, sauté until onions soften.",
+        "Mix in turmeric and washed poha.",
+        "Add salt, mix well, and cook for 2–3 minutes.",
+        "Garnish with coriander and lemon juice before serving."
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Misal Pav",
+      "type": "Main Course",
+      "prep_time": "20 min",
+      "cook_time": "30 min",
+      "calories": 350,
+      "ingredients": [
+        { "name": "Moth beans (matki)", "quantity": "1 cup (sprouted)" },
+        { "name": "Onion", "quantity": "2, chopped" },
+        { "name": "Tomato", "quantity": "2, chopped" },
+        { "name": "Ginger-garlic paste", "quantity": "1 tbsp" },
+        { "name": "Misal masala", "quantity": "2 tbsp" },
+        { "name": "Farsan", "quantity": "1 cup" },
+        { "name": "Pav", "quantity": "6 pieces" }
+      ],
+      "steps": [
+        "Cook sprouted moth beans until soft.",
+        "Heat oil and sauté onion, ginger-garlic paste, and tomatoes.",
+        "Add misal masala and cook the gravy.",
+        "Mix boiled sprouts with masala and simmer.",
+        "Serve in a bowl topped with farsan, onion, coriander, and lemon.",
+        "Eat with pav."
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Mutton Rassa",
+      "type": "Main Course",
+      "prep_time": "30 min",
+      "cook_time": "60 min",
+      "calories": 420,
+      "ingredients": [
+        { "name": "Mutton (goat meat)", "quantity": "500 g" },
+        { "name": "Onion", "quantity": "3, sliced" },
+        { "name": "Tomato", "quantity": "2, chopped" },
+        { "name": "Ginger-garlic paste", "quantity": "2 tbsp" },
+        { "name": "Dry coconut", "quantity": "1/4 cup (roasted)" },
+        { "name": "Kolhapuri masala", "quantity": "2 tbsp" },
+        { "name": "Red chili powder", "quantity": "2 tsp" },
+        { "name": "Turmeric powder", "quantity": "1 tsp" },
+        { "name": "Oil", "quantity": "3 tbsp" },
+        { "name": "Salt", "quantity": "to taste" }
+      ],
+      "steps": [
+        "Marinate mutton with turmeric, chili powder, and ginger-garlic paste.",
+        "Heat oil, sauté onions until golden brown.",
+        "Add roasted coconut and grind into paste.",
+        "Cook mutton with onion-tomato masala until it releases oil.",
+        "Add Kolhapuri masala and ground paste, cook well.",
+        "Pour water, cover, and cook until mutton is tender.",
+        "Serve hot with bhakri or rice."
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Puran Poli",
+      "type": "Sweet",
+      "prep_time": "30 min",
+      "cook_time": "45 min",
+      "calories": 250,
+      "ingredients": [
+        { "name": "Wheat flour", "quantity": "2 cups" },
+        { "name": "Chana dal", "quantity": "1 cup" },
+        { "name": "Jaggery", "quantity": "1 cup" },
+        { "name": "Ghee", "quantity": "2 tbsp" },
+        { "name": "Cardamom powder", "quantity": "1 tsp" }
+      ],
+      "steps": [
+        "Soak and cook chana dal until soft.",
+        "Drain water and mix dal with grated jaggery.",
+        "Cook mixture until it thickens into a filling (puran).",
+        "Knead wheat flour with water and oil to make dough.",
+        "Roll dough, stuff with puran, and flatten into poli.",
+        "Cook on tawa with ghee until golden brown."
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Ukdiche Modak",
+      "type": "Sweet",
+      "prep_time": "25 min",
+      "cook_time": "20 min",
+      "calories": 200,
+      "ingredients": [
+        { "name": "Rice flour", "quantity": "1 cup" },
+        { "name": "Fresh grated coconut", "quantity": "1 cup" },
+        { "name": "Jaggery", "quantity": "3/4 cup" },
+        { "name": "Cardamom powder", "quantity": "1/2 tsp" },
+        { "name": "Ghee", "quantity": "1 tbsp" },
+        { "name": "Water", "quantity": "1 cup" }
+      ],
+      "steps": [
+        "Heat jaggery and coconut together, cook until filling is ready.",
+        "Add cardamom powder and keep aside.",
+        "Boil water with ghee and a pinch of salt.",
+        "Add rice flour, stir, and cook to form soft dough.",
+        "Take small portion of dough, shape into cup, and stuff with filling.",
+        "Seal edges and shape into modak.",
+        "Steam modaks for 10–12 minutes and serve hot."
+      ]
+    }
   ]
-
-
-    "image": "Pohe.png"
-  },
-  {
-    "name": "Misal Pav",
-    "type": "Snack",
-    "ingredients": ["Sprouts", "Onion", "Spices"],
-    "time": 40,
-    "calories": 350,
-    "steps": "Cook sprouts, make spicy curry, serve with pav.",
-    "image": "Misal Pav.png"
-  },
-  {
-    "name": "Mutton Rassa",
-    "type": "Main Course",
-    "ingredients": ["Mutton", "Onion", "Tomato", "Spices"],
-    "time": 90,
-    "calories": 600,
-    "steps": "Cook mutton with spices to make spicy curry.",
-    "image": "Kolhapuri MuttonRassa.png"
-  },
-  {
-    "name": "Puran Poli",
-    "type": "Sweet",
-    "ingredients": ["Chana dal", "Jaggery", "Wheat flour"],
-    "time": 120,
-    "calories": 400,
-    "steps": "Make stuffing with dal & jaggery, roll into poli.",
-    "image": "Puran Poli.png"
-  },
-  {
-    "name": "Ukdiche Modak",
-    "type": "Sweet",
-    "ingredients": ["Rice flour", "Coconut", "Jaggery"],
-    "time": 60,
-    "calories": 300,
-    "steps": "Make rice dough, fill with coconut-jaggery, steam.",
-    "image": "Ukidiche modak.png"
-  }
-]
+}

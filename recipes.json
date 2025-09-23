@@ -2,7 +2,7 @@
   {
     "name": "Poha",
     "type": "Breakfast",
-    "ingredients": ["Poha", "onion", "green chili", "curry leaves", "mustard seeds", "turmeric"," peanuts", "coriander", "lemon", "salt", "sugar".],
+    "ingredients": ["Poha", "onion", "green chili", "curry leaves", "mustard seeds", "turmeric"," peanuts", "coriander", "lemon", "salt", "sugar"],
     "time": 15,
     "calories": 250,
     "steps": [

@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About | Maha Recipe Hub</title>
-  <!-- Font Awesome for social media icons -->
+  <title>About - Maha Recipe Hub</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
+      background: #fff3e0; /* soft orange background */
+      color: #333;
       text-align: center;
     }
 
@@ -22,110 +22,125 @@
     }
 
     nav {
-      margin: 20px 0 40px;
+      background: #f8f8f8;
+      padding: 15px;
+      border-bottom: 2px solid #eee;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
     }
+
     nav a {
-      margin: 0 15px;
+      margin: 5px 10px;
       text-decoration: none;
-      color: black;
+      color: #333;
       font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s, color 0.3s;
     }
+
     nav a:hover {
-      color: orange;
+      background: orange;
+      color: white;
+    }
+
+    nav .login-btn {
+      background: orange;
+      color: white;
     }
 
     h1 {
       font-size: 2rem;
       margin: 20px 0;
+      color: #d35400;
     }
 
-    p, li {
+    p {
       font-size: 1.1rem;
-      line-height: 1.8;
-    }
-
-    .about-container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-      text-align: left;
+      line-height: 1.6;
+      margin: 0 auto 30px;
+      max-width: 800px;
     }
 
     ol {
-      margin: 20px auto;
-      max-width: 800px;
+      font-size: 1.1rem;
+      line-height: 1.6;
       text-align: left;
+      max-width: 700px;
+      margin: 0 auto 30px auto;
+      padding-left: 20px;
     }
+
+    ol li {
+      margin-bottom: 15px;
+    }
+
+    ol li u { color: #d35400; }
 
     hr {
       width: 60%;
-      margin: 30px auto;
+      margin: 20px auto 40px auto;
+      border: 1px solid #d35400;
     }
 
     footer {
       background: #333;
       color: white;
       padding: 30px 20px;
-      margin-top: 40px;
+      text-align: center;
     }
+
     footer a {
       color: orange;
       margin: 0 10px;
       text-decoration: none;
       font-size: 1.2rem;
     }
-    footer a:hover {
-      color: white;
-    }
-    .footer-social {
-      margin-top: 15px;
-    }
-    .footer-social a {
-      margin: 0 10px;
+
+    footer a:hover { color: white; }
+
+    .footer-social { margin-top: 15px; }
+    .footer-social a { margin: 0 10px; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      p, ol { font-size: 1rem; line-height: 1.4; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <!-- Use relative path for logo -->
   <img src="logo.png" alt="Maha Recipe Hub Logo">
 </header>
 
 <nav>
-  <a href="index.html">Home</a>
+  <a href="index (1).html">Home</a>
   <a href="Recipe.html">Recipe Generator</a>
   <a href="about.html">About</a>
+  <a href="login.html" id="login-link" class="login-btn">Login</a>
+  <span id="welcome-msg" style="display:none; font-weight:bold; margin-left:10px;"></span>
+  <a href="#" id="logout-link" style="display:none; background:red; color:white; padding:8px 15px; border-radius:5px; margin-left:10px;">Logout</a>
 </nav>
 
-<div class="about-container">
-  <h1>🥘 About Maha Recipe Hub</h1>
-  <hr>
-  <p>
-    Welcome to <strong>Maha Recipe Hub</strong>, your one-stop destination for exploring the rich and diverse world of Maharashtrian cuisine. 
-    Our platform is dedicated to preserving the traditional flavors of Maharashtra while also embracing modern cooking techniques 
-    to make recipes simple, accessible, and enjoyable for everyone.
-  </p>
-  <p>
-    At Maha Recipe Hub, we believe that food is more than just nourishment—it is culture, tradition, and a way to connect people. 
-    That’s why we carefully curate recipes that celebrate the authentic taste of Maharashtra, ranging from festive delicacies like 
-    Modak, Puran Poli, and Shrikhand to everyday classics like Poha, Misal Pav, and Sabudana Khichdi.
-  </p>
+<h1>🥘 About Maha Recipe Hub</h1>
+<hr>
+<p>Welcome to <strong>Maha Recipe Hub</strong>, your one-stop destination for exploring the rich and diverse world of Maharashtrian cuisine. Our platform is dedicated to preserving the traditional flavors of Maharashtra while also embracing modern cooking techniques to make recipes simple, accessible, and enjoyable for everyone.</p>
 
-  <h2>We Offer:</h2>
-  <ol>
-    <li><u>Authentic Recipe Collection</u> – A wide range of traditional and fusion Maharashtrian recipes with step-by-step guidance.</li>
-    <li><u>Easy-to-Follow Cooking Guides</u> – Recipes presented in a way that even beginners can cook confidently.</li>
-    <li><u>Festival & Seasonal Specials</u> – Handpicked dishes to celebrate Maharashtrian festivals and cultural occasions.</li>
-    <li><u>Healthy & Budget-Friendly Options</u> – Recipes tailored to modern lifestyles without losing traditional essence.</li>
-    <li><u>Community Sharing</u> – A platform where food enthusiasts can share their own recipes, tips, and experiences.</li>
-  </ol>
+<p>At Maha Recipe Hub, we believe that food is more than just nourishment—it is culture, tradition, and a way to connect people. That’s why we carefully curate recipes that celebrate the authentic taste of Maharashtra, ranging from festive delicacies like Modak, Puran Poli, and Shrikhand to everyday classics like Poha, Misal Pav, and Sabudana Khichdi.</p>
 
-  <p>
-    Our mission is to make cooking Maharashtrian food an exciting experience for both beginners and experts. Whether you are someone away from home 
-    missing authentic flavors, a food lover eager to try something new, or a beginner wanting to learn, Maha Recipe Hub brings the kitchen of Maharashtra right to you.
-  </p>
-</div>
+<ol>
+  <li><u>Authentic Recipe Collection</u> – A wide range of traditional and fusion Maharashtrian recipes with step-by-step guidance.</li>
+  <li><u>Easy-to-Follow Cooking Guides</u> – Recipes presented in a way that even beginners can cook confidently.</li>
+  <li><u>Festival & Seasonal Specials</u> – Handpicked dishes to celebrate Maharashtrian festivals and cultural occasions.</li>
+  <li><u>Healthy & Budget-Friendly Options</u> – Recipes tailored to modern lifestyles without losing traditional essence.</li>
+  <li><u>Community Sharing</u> – A platform where food enthusiasts can share their own recipes, tips, and experiences.</li>
+</ol>
+
+<p>Our mission is to make cooking Maharashtrian food an exciting experience for both beginners and experts. Whether you are someone away from home missing authentic flavors, a food lover eager to try something new, or a beginner wanting to learn, Maha Recipe Hub brings the kitchen of Maharashtra right to you.</p>
 
 <footer>
   <p>&copy; 2025 Maha Recipe Hub | All Rights Reserved</p>
@@ -136,6 +151,34 @@
     <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
   </div>
 </footer>
+
+<script>
+  // ----- LOGIN STATE HANDLER -----
+  const loginLink = document.getElementById('login-link');
+  const logoutLink = document.getElementById('logout-link');
+  const welcomeMsg = document.getElementById('welcome-msg');
+
+  function checkLogin() {
+    const user = localStorage.getItem('username');
+    if(user) {
+      loginLink.style.display = 'none';
+      welcomeMsg.style.display = 'inline';
+      welcomeMsg.textContent = `Welcome, ${user}`;
+      logoutLink.style.display = 'inline';
+    } else {
+      loginLink.style.display = 'inline';
+      welcomeMsg.style.display = 'none';
+      logoutLink.style.display = 'none';
+    }
+  }
+
+  logoutLink.addEventListener('click', () => {
+    localStorage.removeItem('username');
+    checkLogin();
+  });
+
+  checkLogin();
+</script>
 
 </body>
 </html>

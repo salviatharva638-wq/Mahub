@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recipe Details - Maha Recipe Hub</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
   body {
     font-family: 'Inter', sans-serif;
@@ -23,10 +26,7 @@
     justify-content: space-between;
   }
 
-  header img {
-    height: 50px;
-    cursor: pointer;
-  }
+  header img { height: 50px; cursor: pointer; }
 
   nav a {
     text-decoration: none;
@@ -35,7 +35,7 @@
     font-weight: 600;
     padding: 6px 14px;
     border-radius: 6px;
-    transition: all 0.3s;
+    transition: 0.3s;
   }
 
   nav a:hover { background: #ff7f50; color: #fff; }
@@ -49,7 +49,6 @@
     font-size: 2rem;
     font-weight: 700;
     padding: 20px 0;
-    margin: 0;
   }
 
   main {
@@ -71,39 +70,18 @@
   .recipe-detail img {
     flex: 1 1 300px;
     max-width: 400px;
-    height: auto;
     border-radius: 10px;
   }
 
   .recipe-text {
     flex: 2 1 400px;
-    min-width: 200px;
-  }
-
-  .recipe-text h2 {
-    color: #ff7f50;
-    margin-top: 0;
-  }
-
-  .recipe-text p {
-    margin: 10px 0;
-  }
-
-  .recipe-text ul, .recipe-text ol {
-    margin: 5px 0 15px 20px;
-  }
-
-  hr {
-    margin: 30px 0;
-    border: 0;
-    border-top: 2px solid #ff7f50;
   }
 
   iframe {
     width: 100%;
     height: 400px;
     border-radius: 10px;
-    margin-bottom: 20px;
+    margin-top: 20px;
   }
 
   .back-btn {
@@ -114,11 +92,8 @@
     border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    margin: 20px 0;
-    transition: 0.3s;
+    margin-top: 25px;
   }
-
-  .back-btn:hover { background: #e67e22; }
 
   footer {
     background: #333;
@@ -126,26 +101,17 @@
     padding: 30px 20px;
     text-align: center;
   }
-
-  footer a { color: #ff7f50; margin: 0 10px; text-decoration: none; font-size: 1.2rem; }
-  footer a:hover { color: #fff; }
-
-  @media (max-width: 768px) {
-    .recipe-detail { flex-direction: column; align-items: center; }
-    .recipe-detail img { max-width: 90%; }
-    .recipe-text { width: 100%; }
-    iframe { height: 250px; }
-  }
+  footer a { color: #ff7f50; }
 </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="Maha Recipe Hub Logo" onclick="window.location.href='index.html'">
+  <img src="logo.png" onclick="window.location.href='index.html'">
   <nav>
     <a href="index.html">Home</a>
     <a href="explore.html">Explore</a>
-    <a href="generate.html">Recipe Generator</a>
+    <a href="recipe-generator.html">Find My Recipe</a>
     <a href="about.html">About</a>
     <a href="login.html" id="login-link" class="login-btn">Login</a>
     <span id="welcome-msg" style="display:none; font-weight:600;"></span>
@@ -156,23 +122,16 @@
 <h1 class="page-title">Recipe Details</h1>
 
 <main>
-  <div id="recipe-detail">
-    <p>Loading recipe details...</p>
-  </div>
+  <div id="recipe-detail"></div>
   <a href="explore.html" class="back-btn">⬅ Back to Explore</a>
 </main>
 
 <footer>
   <p>&copy; 2025 Maha Recipe Hub | All Rights Reserved</p>
-  <p>Contact us: <a href="mailto:info@maharecipehub.com">info@maharecipehub.com</a></p>
-  <div class="footer-social">
-    <a href="https://facebook.com"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://instagram.com"><i class="fab fa-instagram"></i></a>
-    <a href="https://youtube.com"><i class="fab fa-youtube"></i></a>
-  </div>
 </footer>
 
 <script>
+// LOGIN DISPLAY
 const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const welcomeMsg = document.getElementById('welcome-msg');
@@ -184,56 +143,47 @@ function checkLogin() {
     welcomeMsg.style.display = 'inline';
     welcomeMsg.textContent = `Welcome, ${user}`;
     logoutLink.style.display = 'inline';
-  } else {
-    loginLink.style.display = 'inline';
-    welcomeMsg.style.display = 'none';
-    logoutLink.style.display = 'none';
   }
 }
-logoutLink.addEventListener('click', () => {
-  localStorage.removeItem('username');
-  checkLogin();
-});
+logoutLink.onclick = () => { localStorage.removeItem('username'); location.reload(); }
 checkLogin();
 
-// Fetch and display recipe details
-const params = new URLSearchParams(window.location.search);
-const recipeId = params.get("id");
-const recipeContainer = document.getElementById("recipe-detail");
+// SUPABASE SETUP
+const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-if(!recipeId){
-  recipeContainer.innerHTML = "<p>Recipe not found.</p>";
-} else {
-  fetch(`/api/recipes/${recipeId}`)
-    .then(res => res.json())
-    .then(recipe => {
-      // Convert ingredients & steps from string to list if comma-separated
-      const ingredientsList = recipe.ingredients ? recipe.ingredients.split(',').map(i => i.trim()) : [];
-      const stepsList = recipe.steps ? recipe.steps.split('.').map(s => s.trim()).filter(s => s.length>0) : [];
+// RECIPE FETCH
+const recipeId = new URLSearchParams(window.location.search).get("id");
+const container = document.getElementById("recipe-detail");
 
-      recipeContainer.innerHTML = `
-        <div class="recipe-detail">
-          <img src="${recipe.image_url || 'images/placeholder.png'}" alt="${recipe.name}">
-          <div class="recipe-text">
-            <h2>${recipe.name}</h2>
-            <p><strong>Description:</strong> ${recipe.description || "No description available."}</p>
+async function loadRecipe() {
+  if(!recipeId) return container.innerHTML = "<p>Recipe not found.</p>";
 
-            ${ingredientsList.length ? `<p><strong>Ingredients:</strong></p><ul>${ingredientsList.map(i=>`<li>${i}</li>`).join('')}</ul>` : ""}
+  const { data, error } = await supabase.from('recipes').select('*').eq('id', recipeId).single();
+  if(error) return container.innerHTML = "<p>Failed to load recipe.</p>";
 
-            ${stepsList.length ? `<p><strong>Steps:</strong></p><ol>${stepsList.map(s=>`<li>${s}</li>`).join('')}</ol>` : ""}
-          </div>
-        </div>
+  const ingredientsList = data.ingredients ? data.ingredients.split(',').map(i => `<li>${i.trim()}</li>`).join('') : "";
 
-        ${recipe.video ? `<hr><iframe src="${recipe.video}" allowfullscreen></iframe>` : ""}
-      `;
-    })
-    .catch(err => {
-      recipeContainer.innerHTML = "<p>Failed to load recipe details.</p>";
-      console.error(err);
-    });
+  container.innerHTML = `
+    <div class="recipe-detail">
+      <img src="${data.image_url}">
+      <div class="recipe-text">
+        <h2>${data.name}</h2>
+        <p><strong>Category:</strong> ${data.category || "N/A"}</p>
+        <p><strong>Description:</strong> ${data.description || ""}</p>
+        <p><strong>Cooking Time:</strong> ${data.time || "Not specified"}</p>
+        <p><strong>Calories:</strong> ${data.calories || "Not available"}</p>
+
+        ${ingredientsList ? `<p><strong>Ingredients:</strong></p><ul>${ingredientsList}</ul>` : ""}
+      </div>
+    </div>
+
+    ${data.video ? `<iframe src="${data.video}" allowfullscreen></iframe>` : ""}
+  `;
 }
-</script>
 
+loadRecipe();
+</script>
 </body>
 </html>
-

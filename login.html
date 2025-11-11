@@ -1,218 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Maha Recipe Hub</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Maha Recipe Hub</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #ffffff;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    header {
-      background-color: #ff9800;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 40px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo img {
-      height: 45px;
-      width: auto;
-    }
-
-    .logo h1 {
-      font-size: 1.5rem;
-      color: white;
-      letter-spacing: 1px;
-    }
-
-    nav {
-      display: flex;
-      gap: 20px;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    nav a:hover {
-      color: #ffe0b2;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 10px;
-    }
-
-    form {
-      background: #fff8f0;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      width: 90%;
-      max-width: 400px;
-    }
-
-    form h2 {
-      color: #d35400;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #ff9800;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-bottom: 10px;
-      transition: background 0.3s;
-    }
-
-    button:hover { background: #e67e22; }
-
-    .guest-btn { background: gray; }
-    .guest-btn:hover { background: #555; }
-
-    .message { margin-top: 10px; color: red; font-weight: bold; }
-
-    footer {
-      text-align: center;
-      color: white;
-      padding: 15px 0;
-      font-size: 0.9rem;
-      background: #000;
-    }
-  </style>
+<style>
+body { font-family: Arial, sans-serif; background:#fffaf2; margin:0; display:flex; justify-content:center; align-items:center; height:100vh; }
+.login-box {
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+  width:330px;
+  text-align:center;
+}
+input {
+  width:90%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  margin-bottom:15px;
+}
+button {
+  width:95%;
+  padding:10px;
+  background:#ff7f50;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:1rem;
+}
+button:hover { background:#e56e3f; }
+p { color:red; font-size:0.9rem; }
+</style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <img src="logo.png" alt="Maha Recipe Hub Logo">
-    <h1>Maha Recipe Hub</h1>
-  </div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="explore.html">Explore</a>
-    <a href="recipe-generator.html">Find My Recipe</a>
-    <a href="about.html">About</a>
-    <a href="login.html">Login</a>
-  </nav>
-</header>
-
-<main>
-  <form id="login-form">
-    <h2>Login / Register</h2>
-
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-
-    <button type="submit" id="login-btn">Login</button>
-    <button type="button" id="register-btn">Register</button>
-    <button type="button" class="guest-btn" id="guest-btn">Continue as Guest</button>
-
-    <div class="message" id="message"></div>
-  </form>
-</main>
-
-<footer>
-  &copy; 2025 Maha Recipe Hub | All Rights Reserved
-</footer>
+<div class="login-box">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Enter username">
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="loginUser()">Login</button>
+  <p id="message"></p>
+</div>
 
 <script>
-  // Supabase Setup
-  const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase Connection
+const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
 
-  const loginBtn = document.getElementById('login-btn');
-  const registerBtn = document.getElementById('register-btn');
-  const guestBtn = document.getElementById('guest-btn');
-  const message = document.getElementById('message');
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Login
-  loginBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
+async function loginUser(){
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const message = document.getElementById("message");
 
-    const { data } = await supabase
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .eq('password', password)
-      .single();
+  if(!username || !password){
+    message.textContent = "Please fill out all fields.";
+    return;
+  }
 
-    if (data) {
-      localStorage.setItem('username', username);
-      window.location.href = 'index.html';
-    } else {
-      message.textContent = "Invalid username or password.";
-    }
-  });
+  // Check user in DB
+  const { data, error } = await client
+    .from("users")
+    .select("*")
+    .eq("username", username)
+    .eq("password", password)
+    .single();
 
-  // Register
-  registerBtn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    const { error } = await supabase
-      .from('users')
-      .insert([{ username, password }]);
-
-    if (!error) {
-      message.style.color = 'green';
-      message.textContent = 'Registration successful! Now login.';
-    } else {
-      message.textContent = 'Username already exists.';
-    }
-  });
-
-  // Guest Login
-  guestBtn.addEventListener('click', () => {
-    localStorage.setItem('username', 'Guest');
-    window.location.href = 'index.html';
-  });
+  if(error || !data){
+    message.textContent = "Invalid username or password.";
+  } else {
+    // Store Login
+    localStorage.setItem("username", data.username);
+    message.style.color = "green";
+    message.textContent = "Login Successful! Redirecting...";
+    setTimeout(() => { window.location.href = "index.html"; }, 1200);
+  }
+}
 </script>
 
 </body>

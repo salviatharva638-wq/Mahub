@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recipe Details - Maha Recipe Hub</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #fffaf5;
+    color: #333;
+  }
+
+  header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header img {
+    height: 50px;
+    cursor: pointer;
+  }
+
+  nav a {
+    text-decoration: none;
+    margin-left: 15px;
+    color: #333;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: all 0.3s;
+  }
+
+  nav a:hover { background: #ff7f50; color: #fff; }
+  nav .login-btn { background: #ff7f50; color: #fff; }
+  nav #logout-link { background: #ff4c4c; color: #fff; }
+
+  .page-title {
+    background: linear-gradient(90deg, #ff7f50, #ff9966);
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    padding: 20px 0;
+    margin: 0;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+
+  .recipe-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: #fff8f0;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .recipe-detail img {
+    flex: 1 1 300px;
+    max-width: 400px;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .recipe-text {
+    flex: 2 1 400px;
+    min-width: 200px;
+  }
+
+  .recipe-text h2 {
+    color: #ff7f50;
+    margin-top: 0;
+  }
+
+  .recipe-text p {
+    margin: 10px 0;
+  }
+
+  .recipe-text ul, .recipe-text ol {
+    margin: 5px 0 15px 20px;
+  }
+
+  hr {
+    margin: 30px 0;
+    border: 0;
+    border-top: 2px solid #ff7f50;
+  }
+
+  iframe {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .back-btn {
+    display: inline-block;
+    background: #ff7f50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 20px 0;
+    transition: 0.3s;
+  }
+
+  .back-btn:hover { background: #e67e22; }
+
+  footer {
+    background: #333;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  footer a { color: #ff7f50; margin: 0 10px; text-decoration: none; font-size: 1.2rem; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 768px) {
+    .recipe-detail { flex-direction: column; align-items: center; }
+    .recipe-detail img { max-width: 90%; }
+    .recipe-text { width: 100%; }
+    iframe { height: 250px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Maha Recipe Hub Logo" onclick="window.location.href='index.html'">
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore</a>
+    <a href="generate.html">Recipe Generator</a>
+    <a href="about.html">About</a>
+    <a href="login.html" id="login-link" class="login-btn">Login</a>
+    <span id="welcome-msg" style="display:none; font-weight:600;"></span>
+    <a href="#" id="logout-link" style="display:none;">Logout</a>
+  </nav>
+</header>
+
+<h1 class="page-title">Recipe Details</h1>
+
+<main>
+  <div id="recipe-detail">
+    <p>Loading recipe details...</p>
+  </div>
+  <a href="explore.html" class="back-btn">⬅ Back to Explore</a>
+</main>
+
+<footer>
+  <p>&copy; 2025 Maha Recipe Hub | All Rights Reserved</p>
+  <p>Contact us: <a href="mailto:info@maharecipehub.com">info@maharecipehub.com</a></p>
+  <div class="footer-social">
+    <a href="https://facebook.com"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://instagram.com"><i class="fab fa-instagram"></i></a>
+    <a href="https://youtube.com"><i class="fab fa-youtube"></i></a>
+  </div>
+</footer>
+
+<script>
+const loginLink = document.getElementById('login-link');
+const logoutLink = document.getElementById('logout-link');
+const welcomeMsg = document.getElementById('welcome-msg');
+
+function checkLogin() {
+  const user = localStorage.getItem('username');
+  if(user){
+    loginLink.style.display = 'none';
+    welcomeMsg.style.display = 'inline';
+    welcomeMsg.textContent = `Welcome, ${user}`;
+    logoutLink.style.display = 'inline';
+  } else {
+    loginLink.style.display = 'inline';
+    welcomeMsg.style.display = 'none';
+    logoutLink.style.display = 'none';
+  }
+}
+logoutLink.addEventListener('click', () => {
+  localStorage.removeItem('username');
+  checkLogin();
+});
+checkLogin();
+
+// Fetch and display recipe details
+const params = new URLSearchParams(window.location.search);
+const recipeId = params.get("id");
+const recipeContainer = document.getElementById("recipe-detail");
+
+if(!recipeId){
+  recipeContainer.innerHTML = "<p>Recipe not found.</p>";
+} else {
+  fetch(`/api/recipes/${recipeId}`)
+    .then(res => res.json())
+    .then(recipe => {
+      // Convert ingredients & steps from string to list if comma-separated
+      const ingredientsList = recipe.ingredients ? recipe.ingredients.split(',').map(i => i.trim()) : [];
+      const stepsList = recipe.steps ? recipe.steps.split('.').map(s => s.trim()).filter(s => s.length>0) : [];
+
+      recipeContainer.innerHTML = `
+        <div class="recipe-detail">
+          <img src="${recipe.image_url || 'images/placeholder.png'}" alt="${recipe.name}">
+          <div class="recipe-text">
+            <h2>${recipe.name}</h2>
+            <p><strong>Description:</strong> ${recipe.description || "No description available."}</p>
+
+            ${ingredientsList.length ? `<p><strong>Ingredients:</strong></p><ul>${ingredientsList.map(i=>`<li>${i}</li>`).join('')}</ul>` : ""}
+
+            ${stepsList.length ? `<p><strong>Steps:</strong></p><ol>${stepsList.map(s=>`<li>${s}</li>`).join('')}</ol>` : ""}
+          </div>
+        </div>
+
+        ${recipe.video ? `<hr><iframe src="${recipe.video}" allowfullscreen></iframe>` : ""}
+      `;
+    })
+    .catch(err => {
+      recipeContainer.innerHTML = "<p>Failed to load recipe details.</p>";
+      console.error(err);
+    });
+}
+</script>
+
+</body>
+</html>
+

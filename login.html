@@ -2,62 +2,218 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login | Maha Recipe Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Maha Recipe Hub</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f7f7f7;
+      margin: 0;
+      background: #ffffff;
+      color: #333;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      flex-direction: column;
+      min-height: 100vh;
     }
-    .login-container {
-      background: white;
+
+    header {
+      background-color: #ff9800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 45px;
+      width: auto;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      color: white;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffe0b2;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 10px;
+    }
+
+    form {
+      background: #fff8f0;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      width: 90%;
+      max-width: 400px;
     }
-    input[type="text"], input[type="password"] {
+
+    form h2 {
+      color: #d35400;
+      margin-bottom: 20px;
+    }
+
+    input {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
     }
+
     button {
       width: 100%;
       padding: 10px;
-      background-color: #ff6b00;
-      border: none;
+      background: #ff9800;
       color: white;
-      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover { background: #e67e22; }
+
+    .guest-btn { background: gray; }
+    .guest-btn:hover { background: #555; }
+
+    .message { margin-top: 10px; color: red; font-weight: bold; }
+
+    footer {
+      text-align: center;
+      color: white;
+      padding: 15px 0;
+      font-size: 0.9rem;
+      background: #000;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form onsubmit="return validateLogin()">
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p id="login-msg" style="color: red; font-size: 0.9em;"></p>
+
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="Maha Recipe Hub Logo">
+    <h1>Maha Recipe Hub</h1>
   </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore</a>
+    <a href="recipe-generator.html">Find My Recipe</a>
+    <a href="about.html">About</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
 
-  <script>
-    function validateLogin() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+<main>
+  <form id="login-form">
+    <h2>Login / Register</h2>
 
-      // Demo login check (replace with real logic if needed)
-      if (username === "admin" && password === "admin123") {
-        alert("Login successful!");
-        return true;
-      } else {
-        document.getElementById("login-msg").textContent = "Invalid credentials!";
-        return false;
-      }
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+
+    <button type="submit" id="login-btn">Login</button>
+    <button type="button" id="register-btn">Register</button>
+    <button type="button" class="guest-btn" id="guest-btn">Continue as Guest</button>
+
+    <div class="message" id="message"></div>
+  </form>
+</main>
+
+<footer>
+  &copy; 2025 Maha Recipe Hub | All Rights Reserved
+</footer>
+
+<script>
+  // Supabase Setup
+  const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const loginBtn = document.getElementById('login-btn');
+  const registerBtn = document.getElementById('register-btn');
+  const guestBtn = document.getElementById('guest-btn');
+  const message = document.getElementById('message');
+
+  // Login
+  loginBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    const { data } = await supabase
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('password', password)
+      .single();
+
+    if (data) {
+      localStorage.setItem('username', username);
+      window.location.href = 'index.html';
+    } else {
+      message.textContent = "Invalid username or password.";
     }
-  </script>
+  });
+
+  // Register
+  registerBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    const { error } = await supabase
+      .from('users')
+      .insert([{ username, password }]);
+
+    if (!error) {
+      message.style.color = 'green';
+      message.textContent = 'Registration successful! Now login.';
+    } else {
+      message.textContent = 'Username already exists.';
+    }
+  });
+
+  // Guest Login
+  guestBtn.addEventListener('click', () => {
+    localStorage.setItem('username', 'Guest');
+    window.location.href = 'index.html';
+  });
+</script>
+
 </body>
 </html>

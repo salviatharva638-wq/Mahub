@@ -51,7 +51,6 @@
   }
   nav a:hover { background: #e67e22; }
 
-  /* Profile icon */
   .profile-container {
     position: relative;
     display: inline-block;
@@ -248,7 +247,7 @@
 
 <div class="page-strip">Welcome to Maha Recipe Hub</div>
 
-<!-- User Profile Icon -->
+<!-- Profile Section -->
 <div class="profile-container">
   <div class="profile-icon" id="profile-icon">AB</div>
   <div class="profile-card" id="profile-card">
@@ -304,7 +303,7 @@
     </div>
   </div>
 
-  <a class="btn" href="Recipe.html">Explore More</a>
+  <a class="btn" href="explore.html">Explore More</a>
 </main>
 
 <footer>
@@ -317,8 +316,14 @@
   </div>
 </footer>
 
-<script>
-// ---------- Persistent Login ----------
+<!-- 🟠 Supabase Integration -->
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://sraahdptzfbkrxrbllqx.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 const loginLink = document.getElementById('login-link');
 const profileIcon = document.getElementById('profile-icon');
 const profileCard = document.getElementById('profile-card');
@@ -329,62 +334,80 @@ const profilePhoto = document.getElementById('profile-photo');
 const uploadPhoto = document.getElementById('upload-photo');
 const changePhotoBtn = document.getElementById('change-photo-btn');
 
-let user = JSON.parse(localStorage.getItem("user")) || null;
+// 🔹 Load current logged-in user
+async function loadUser() {
+  const { data: { user } } = await supabase.auth.getUser();
 
-// Sample login for demo (replace with actual login)
-if(!user){
-  user = {
-    username: "Atharva Vinod Salvi",
-    id: "M001",
-    email: "atharva@example.com",
-    photo: null
-  };
-  localStorage.setItem("user", JSON.stringify(user));
-}
-
-// Initialize profile
-function initializeProfile(){
-  if(user){
+  if (user) {
     loginLink.style.display = 'none';
-    const initials = user.username.split(" ").map(n=>n[0]).join("").toUpperCase();
-    profileIcon.textContent = user.photo ? "" : initials;
-    profileUsername.textContent = user.username;
+
+    const { data: userData } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    const initials = userData?.username
+      ? userData.username.split(" ").map(n => n[0]).join("").toUpperCase()
+      : user.email[0].toUpperCase();
+
+    profileIcon.textContent = userData?.photo_url ? "" : initials;
+    profileUsername.textContent = userData?.username || "User";
     profileId.textContent = user.id;
     profileEmail.textContent = user.email;
-    if(user.photo) profilePhoto.src = user.photo;
+    if (userData?.photo_url) profilePhoto.src = userData.photo_url;
+  } else {
+    loginLink.style.display = 'block';
+    profileCard.style.display = 'none';
   }
 }
-initializeProfile();
 
-// Toggle profile card
-profileIcon.addEventListener("click", ()=>{
+// 🔸 Toggle Profile Card
+profileIcon.addEventListener("click", () => {
   profileCard.style.display = profileCard.style.display === "block" ? "none" : "block";
 });
 
-// Close when clicking outside
-document.addEventListener("click", e=>{
-  if(!profileCard.contains(e.target) && e.target !== profileIcon){
+// 🔸 Close profile card when clicking outside
+document.addEventListener("click", e => {
+  if (!profileCard.contains(e.target) && e.target !== profileIcon) {
     profileCard.style.display = "none";
   }
 });
 
-// Upload profile photo
-changePhotoBtn.addEventListener("click", ()=>{
-  uploadPhoto.click();
+// 🔸 Upload profile photo
+changePhotoBtn.addEventListener("click", () => uploadPhoto.click());
+
+uploadPhoto.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return alert("Please log in first.");
+
+  const filePath = `profile-photos/${user.id}/${file.name}`;
+  const { error: uploadError } = await supabase.storage
+    .from('avatars')
+    .upload(filePath, file, { upsert: true });
+
+  if (uploadError) {
+    console.error(uploadError);
+    alert("Failed to upload photo!");
+    return;
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('avatars')
+    .getPublicUrl(filePath);
+
+  await supabase.from('users').update({ photo_url: publicUrl }).eq('id', user.id);
+
+  profilePhoto.src = publicUrl;
+  profileIcon.textContent = "";
+  alert("Profile photo updated!");
 });
 
-uploadPhoto.addEventListener("change", (e)=>{
-  const reader = new FileReader();
-  reader.onload = function(event){
-    profilePhoto.src = event.target.result;
-    profileIcon.textContent = "";
-    user.photo = event.target.result;
-    localStorage.setItem("user", JSON.stringify(user));
-  };
-  reader.readAsDataURL(e.target.files[0]);
-});
+loadUser();
 </script>
 
 </body>
 </html>
-

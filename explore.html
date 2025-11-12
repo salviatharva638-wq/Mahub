@@ -307,7 +307,7 @@ function renderRecipes(list) {
       <div class="recipe-tags">${tags}</div>
       <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
     `;
-    card.onclick = () => window.location.href = \`recipe-detail.html?id=\${r.id}\`;
+    card.onclick = () => window.location.href = `recipe-detail.html?id=${r.id}`;
     recipeList.appendChild(card);
   });
 }
@@ -362,6 +362,7 @@ loadRecipes();
 </script>
 </body>
 </html>
+
 
 
 

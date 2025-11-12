@@ -5,182 +5,245 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About - Maha Recipe Hub</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    /* ---------- Global Styles ---------- */
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      background: #fff3e0; /* soft orange background */
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: #fffaf2;
       color: #333;
-      text-align: center;
     }
 
-    header img {
-      width: 100%;
-      max-width: 1000px;
-      height: auto;
-      margin-top: 20px;
-    }
-
-    nav {
-      background: #f8f8f8;
-      padding: 15px;
-      border-bottom: 2px solid #eee;
+    /* ---------- Header Bar ---------- */
+    header {
+      background: #ffb347;
+      color: #fff;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    header .logo {
+      display: flex;
       align-items: center;
       gap: 10px;
     }
 
+    header .logo img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+    }
+
+    /* ---------- Navbar ---------- */
+    nav {
+      background: #fff;
+      border-bottom: 2px solid #eee;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 12px 0;
+    }
+
     nav a {
-      margin: 5px 10px;
       text-decoration: none;
-      color: #333;
-      font-weight: bold;
-      padding: 8px 12px;
+      color: #444;
+      font-weight: 600;
+      padding: 8px 15px;
       border-radius: 5px;
-      transition: background 0.3s, color 0.3s;
+      transition: all 0.3s;
     }
 
-    nav a:hover {
-      background: orange;
-      color: white;
+    nav a:hover,
+    nav a.active {
+      background: #ffb347;
+      color: #fff;
     }
 
-    nav .login-btn {
-      background: orange;
-      color: white;
+    .login-btn {
+      background: #ff9800;
+      color: #fff !important;
     }
 
-    h1 {
+    #logout-link {
+      background: red;
+      color: white !important;
+      padding: 8px 15px;
+      border-radius: 5px;
+    }
+
+    /* ---------- Main Section ---------- */
+    main {
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    main h2 {
       font-size: 2rem;
-      margin: 20px 0;
-      color: #d35400;
+      color: #e65100;
+      margin-bottom: 20px;
     }
 
-    p {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      margin: 0 auto 30px;
+    main p {
       max-width: 800px;
+      margin: 0 auto 20px;
+      line-height: 1.7;
+      font-size: 1.1rem;
     }
 
-    ol {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      text-align: left;
+    main ol {
       max-width: 700px;
-      margin: 0 auto 30px auto;
+      margin: 0 auto 30px;
+      text-align: left;
+      font-size: 1.05rem;
+      line-height: 1.7;
       padding-left: 20px;
     }
 
-    ol li {
-      margin-bottom: 15px;
+    main ol li {
+      margin-bottom: 10px;
     }
 
-    ol li u { color: #d35400; }
-
-    hr {
-      width: 60%;
-      margin: 20px auto 40px auto;
-      border: 1px solid #d35400;
+    main ol li u {
+      color: #e65100;
     }
 
+    /* ---------- Footer ---------- */
     footer {
       background: #333;
-      color: white;
-      padding: 30px 20px;
+      color: #fff;
       text-align: center;
+      padding: 25px 15px;
+      margin-top: 50px;
     }
 
     footer a {
-      color: orange;
-      margin: 0 10px;
+      color: #ffb347;
+      margin: 0 8px;
       text-decoration: none;
-      font-size: 1.2rem;
     }
 
-    footer a:hover { color: white; }
+    footer a:hover {
+      color: #fff;
+    }
 
-    .footer-social { margin-top: 15px; }
-    .footer-social a { margin: 0 10px; }
+    .footer-social a {
+      font-size: 1.3rem;
+      margin: 0 8px;
+    }
 
+    /* ---------- Responsive ---------- */
     @media (max-width: 600px) {
-      h1 { font-size: 1.5rem; }
-      p, ol { font-size: 1rem; line-height: 1.4; }
+      header h1 {
+        font-size: 1.4rem;
+      }
+      main h2 {
+        font-size: 1.5rem;
+      }
+      main p, main ol {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <img src="logo.png" alt="Maha Recipe Hub Logo">
-</header>
+  <!-- ---------- Header ---------- -->
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="Maha Recipe Hub Logo">
+      <h1>Maha Recipe Hub</h1>
+    </div>
+    <div>
+      <span id="welcome-msg" style="font-weight:bold; display:none;"></span>
+    </div>
+  </header>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="Recipe.html">Find My Recipe</a>
-  <a href="explore.html">Explore</a>
-  <a href="about.html">About</a>
-  <a href="login.html" id="login-link" class="login-btn">Login</a>
-  <span id="welcome-msg" style="display:none; font-weight:bold; margin-left:10px;"></span>
-  <a href="#" id="logout-link" style="display:none; background:red; color:white; padding:8px 15px; border-radius:5px; margin-left:10px;">Logout</a>
-</nav>
+  <!-- ---------- Navigation ---------- -->
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="Recipe.html">Find My Recipe</a>
+    <a href="explore.html">Explore</a>
+    <a href="about.html" class="active">About</a>
+    <a href="login.html" id="login-link" class="login-btn">Login</a>
+    <a href="#" id="logout-link" style="display:none;">Logout</a>
+  </nav>
 
-<h1>🥘 About Maha Recipe Hub</h1>
-<hr>
-<p>Welcome to <strong>Maha Recipe Hub</strong>, your one-stop destination for exploring the rich and diverse world of Maharashtrian cuisine. Our platform is dedicated to preserving the traditional flavors of Maharashtra while also embracing modern cooking techniques to make recipes simple, accessible, and enjoyable for everyone.</p>
+  <!-- ---------- Main Content ---------- -->
+  <main>
+    <h2>🥘 About Maha Recipe Hub</h2>
+    <p>
+      Welcome to <strong>Maha Recipe Hub</strong>, your destination for discovering and sharing the rich and diverse flavors of Maharashtrian cuisine.
+      We bring together traditional recipes, local favorites, and modern twists — all in one place!
+    </p>
 
-<p>At Maha Recipe Hub, we believe that food is more than just nourishment—it is culture, tradition, and a way to connect people. That’s why we carefully curate recipes that celebrate the authentic taste of Maharashtra, ranging from festive delicacies like Modak, Puran Poli, and Shrikhand to everyday classics like Poha, Misal Pav, and Sabudana Khichdi.</p>
+    <p>
+      Our mission is to preserve Maharashtra’s culinary heritage while making cooking simple, fun, and accessible for everyone.
+      From festive sweets like <em>Modak</em> and <em>Puran Poli</em> to everyday dishes like <em>Poha</em> and <em>Misal Pav</em>,
+      we’ve got something for every foodie.
+    </p>
 
-<ol>
-  <li><u>Authentic Recipe Collection</u> – A wide range of traditional and fusion Maharashtrian recipes with step-by-step guidance.</li>
-  <li><u>Easy-to-Follow Cooking Guides</u> – Recipes presented in a way that even beginners can cook confidently.</li>
-  <li><u>Festival & Seasonal Specials</u> – Handpicked dishes to celebrate Maharashtrian festivals and cultural occasions.</li>
-  <li><u>Healthy & Budget-Friendly Options</u> – Recipes tailored to modern lifestyles without losing traditional essence.</li>
-  <li><u>Community Sharing</u> – A platform where food enthusiasts can share their own recipes, tips, and experiences.</li>
-</ol>
+    <ol>
+      <li><u>Authentic Recipe Collection</u> – Traditional & fusion Maharashtrian dishes.</li>
+      <li><u>Easy-to-Follow Guides</u> – Step-by-step instructions for all levels.</li>
+      <li><u>Festival & Seasonal Specials</u> – Dishes for every occasion.</li>
+      <li><u>Healthy & Budget-Friendly</u> – Recipes adapted for modern lifestyles.</li>
+      <li><u>Community Sharing</u> – A space to share your food stories and recipes.</li>
+    </ol>
 
-<p>Our mission is to make cooking Maharashtrian food an exciting experience for both beginners and experts. Whether you are someone away from home missing authentic flavors, a food lover eager to try something new, or a beginner wanting to learn, Maha Recipe Hub brings the kitchen of Maharashtra right to you.</p>
+    <p>
+      Whether you’re a beginner, a professional chef, or just missing home-cooked flavors,
+      Maha Recipe Hub connects you with the essence of Maharashtra — one recipe at a time.
+    </p>
+  </main>
 
-<footer>
-  <p>&copy; 2025 Maha Recipe Hub | All Rights Reserved</p>
-  <p>Contact us: <a href="mailto:info@maharecipehub.com">info@maharecipehub.com</a></p>
-  <div class="footer-social">
-    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
-  </div>
-</footer>
+  <!-- ---------- Footer ---------- -->
+  <footer>
+    <p>&copy; 2025 Maha Recipe Hub | All Rights Reserved</p>
+    <p>Contact: <a href="mailto:info@maharecipehub.com">info@maharecipehub.com</a></p>
+    <div class="footer-social">
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+    </div>
+  </footer>
 
-<script>
-  // ----- LOGIN STATE HANDLER -----
-  const loginLink = document.getElementById('login-link');
-  const logoutLink = document.getElementById('logout-link');
-  const welcomeMsg = document.getElementById('welcome-msg');
+  <!-- ---------- JS: Login State ---------- -->
+  <script>
+    const loginLink = document.getElementById('login-link');
+    const logoutLink = document.getElementById('logout-link');
+    const welcomeMsg = document.getElementById('welcome-msg');
 
-  function checkLogin() {
-    const user = localStorage.getItem('username');
-    if(user) {
-      loginLink.style.display = 'none';
-      welcomeMsg.style.display = 'inline';
-      welcomeMsg.textContent = `Welcome, ${user}`;
-      logoutLink.style.display = 'inline';
-    } else {
-      loginLink.style.display = 'inline';
-      welcomeMsg.style.display = 'none';
-      logoutLink.style.display = 'none';
+    function checkLogin() {
+      const user = localStorage.getItem('username');
+      if (user) {
+        loginLink.style.display = 'none';
+        logoutLink.style.display = 'inline';
+        welcomeMsg.style.display = 'inline';
+        welcomeMsg.textContent = `Welcome, ${user}`;
+      } else {
+        loginLink.style.display = 'inline';
+        logoutLink.style.display = 'none';
+        welcomeMsg.style.display = 'none';
+      }
     }
-  }
 
-  logoutLink.addEventListener('click', () => {
-    localStorage.removeItem('username');
+    logoutLink.addEventListener('click', () => {
+      localStorage.removeItem('username');
+      checkLogin();
+    });
+
     checkLogin();
-  });
-
-  checkLogin();
-</script>
+  </script>
 
 </body>
 </html>
-

@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: #fffaf2;
   margin: 0;
   display: flex;
@@ -20,12 +20,8 @@ body {
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 340px;
+  width: 330px;
   text-align: center;
-}
-h2 {
-  color: #ff7f50;
-  margin-bottom: 20px;
 }
 input {
   width: 90%;
@@ -33,7 +29,6 @@ input {
   border-radius: 8px;
   border: 1px solid #ddd;
   margin-bottom: 15px;
-  font-size: 1rem;
 }
 button {
   width: 95%;
@@ -45,23 +40,17 @@ button {
   cursor: pointer;
   font-size: 1rem;
 }
-button:hover {
-  background: #e56e3f;
+button:hover { background: #e56e3f; }
+p { color: red; font-size: 0.9rem; }
+#userInfo {
+  display: none;
+  margin-top: 15px;
 }
-p {
-  color: red;
-  font-size: 0.9rem;
-}
-a {
-  color: #ff7f50;
-  text-decoration: none;
-  font-weight: bold;
-}
-a:hover {
-  text-decoration: underline;
-}
-.extra-links {
-  margin-top: 10px;
+#userInfo img {
+  width: 80px; height: 80px;
+  border-radius: 50%; object-fit: cover;
+  margin-bottom: 10px;
+  border: 2px solid #ff7f50;
 }
 </style>
 </head>
@@ -75,10 +64,13 @@ a:hover {
   <button onclick="loginUser()">Login</button>
   <p id="message"></p>
 
-  <div class="extra-links">
-    <p>Don’t have an account? <a href="signup.html">Sign Up</a></p>
-    <a href="index.html">← Back to Home</a>
+  <div id="userInfo">
+    <img id="userPhoto" src="" alt="Profile">
+    <h3 id="welcome"></h3>
+    <button onclick="window.location.href='index.html'">Back to Home</button>
   </div>
+
+  <p style="margin-top:10px;">Don’t have an account? <a href="signup.html" style="color:#ff7f50;">Sign Up</a></p>
 </div>
 
 <script>
@@ -91,9 +83,10 @@ async function loginUser() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
   const message = document.getElementById("message");
+  const infoBox = document.getElementById("userInfo");
 
   if (!email || !username || !password) {
-    message.textContent = "Please fill out all fields.";
+    message.textContent = "Please fill all fields.";
     return;
   }
 
@@ -106,14 +99,17 @@ async function loginUser() {
     .single();
 
   if (error || !data) {
-    console.error(error);
     message.textContent = "Invalid credentials. Try again.";
-    message.style.color = "red";
+    infoBox.style.display = "none";
   } else {
-    localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem("username", data.username);
+    localStorage.setItem("photo_url", data.photo_url || "");
     message.style.color = "green";
-    message.textContent = "Login successful! Redirecting...";
-    setTimeout(() => window.location.href = "index.html", 1000);
+    message.textContent = "Login successful!";
+
+    document.getElementById("userPhoto").src = data.photo_url || "https://via.placeholder.com/80";
+    document.getElementById("welcome").textContent = `Welcome, ${data.username}!`;
+    infoBox.style.display = "block";
   }
 }
 </script>

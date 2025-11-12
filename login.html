@@ -4,84 +4,236 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - Maha Recipe Hub</title>
+
+<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- jQuery for sliding animation -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Paper.js for animated canvas -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.15/paper-full.min.js"></script>
 
 <style>
-body { font-family: Arial, sans-serif; background:#fffaf2; margin:0; display:flex; justify-content:center; align-items:center; height:100vh; }
-.login-box {
-  background:white;
-  padding:30px;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);
-  width:330px;
-  text-align:center;
+/* === Orange Theme Colors === */
+:root {
+  --orange: #ff7f50;
+  --orange-dark: #e56e3f;
+  --background-dark: #2C3034;
+  --background-light: #fffaf2;
+  --text-dark: #212121;
+  --text-light: #f9f9f9;
+  --font: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  font-family: var(--font);
+  background: var(--background-light);
+}
+
+/* Background halves */
+.backRight {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--orange);
+}
+.backLeft {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--orange-dark);
+}
+#back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: -1;
+}
+.canvas-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sliding box */
+#slideBox {
+  width: 50%;
+  height: 100%;
+  margin-left: 25%;
+  position: absolute;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  overflow: hidden;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  width: 80%;
+  margin: 0 auto;
+  position: relative;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2.4em;
+  font-weight: 600;
+  color: var(--orange);
+  margin-bottom: 20px;
+}
+
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+label {
+  font-size: 0.8em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: 5px;
 }
 input {
-  width:90%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
-  margin-bottom:15px;
+  border: none;
+  border-bottom: 2px solid var(--orange-dark);
+  padding: 10px;
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.3s;
+}
+input:focus {
+  border-color: var(--orange);
 }
 button {
-  width:95%;
-  padding:10px;
-  background:#ff7f50;
-  color:white;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:1rem;
+  padding: 10px;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
-button:hover { background:#e56e3f; }
-p { color:red; font-size:0.9rem; }
+button:hover {
+  background: var(--orange-dark);
+}
+p {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
 </style>
 </head>
 <body>
 
-<div class="login-box">
-  <h2>Login</h2>
-  <input type="text" id="username" placeholder="Enter username">
-  <input type="password" id="password" placeholder="Enter password">
-  <button onclick="loginUser()">Login</button>
-  <p id="message"></p>
+<!-- Animated Background -->
+<div id="back">
+  <canvas id="canvas" class="canvas-back"></canvas>
+  <div class="backRight"></div>
+  <div class="backLeft"></div>
 </div>
 
-<script>
-// Supabase Connection
-const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
+<!-- Login Box -->
+<div id="slideBox">
+  <div class="content">
+    <h2>Login</h2>
+    <div class="form-stack">
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="Enter your email" required>
+    </div>
+    <div class="form-stack">
+      <label for="password">Password</label>
+      <input id="password" type="password" placeholder="Enter your password" required>
+    </div>
+    <button id="loginBtn">Login</button>
+    <p id="message"></p>
+  </div>
+</div>
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<!-- === LOGIN LOGIC === -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-async function loginUser(){
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const SUPABASE_URL = 'https://sraahdptzfbkrxrbllqx.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0';
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const loginBtn = document.getElementById("loginBtn");
   const message = document.getElementById("message");
 
-  if(!username || !password){
-    message.textContent = "Please fill out all fields.";
-    return;
-  }
+  loginBtn.addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-  // Check user in DB
-  const { data, error } = await client
-    .from("users")
-    .select("*")
-    .eq("username", username)
-    .eq("password", password)
-    .single();
+    if (!email || !password) {
+      message.textContent = "Please fill out all fields.";
+      return;
+    }
 
-  if(error || !data){
-    message.textContent = "Invalid username or password.";
-  } else {
-    // Store Login
-    localStorage.setItem("username", data.username);
-    message.style.color = "green";
-    message.textContent = "Login Successful! Redirecting...";
-    setTimeout(() => { window.location.href = "index.html"; }, 1200);
-  }
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      message.style.color = "red";
+      message.textContent = "Invalid email or password.";
+    } else {
+      message.style.color = "green";
+      message.textContent = "Login successful! Redirecting...";
+      localStorage.setItem("loggedIn", "true");
+      setTimeout(() => (window.location.href = "index.html"), 1200);
+    }
+  });
+</script>
+
+<!-- === ANIMATED BACKGROUND SCRIPT === -->
+<script>
+paper.install(window);
+paper.setup(document.getElementById("canvas"));
+
+let shapeGroup = new Group();
+let positionArray = [];
+
+function getCanvasBounds() {
+  const viewSize = view.size;
+  const w = viewSize.width, h = viewSize.height;
+  const mx = w / 2, my = h / 2;
+  positionArray = [
+    { x: mx / 2 + 100, y: 100 },
+    { x: 200, y: my },
+    { x: mx + 200, y: 150 },
+    { x: w - 130, y: h - 75 },
+    { x: mx + 80, y: h - 50 }
+  ];
 }
+
+function initializeShapes() {
+  getCanvasBounds();
+  const paths = [
+    'M231,352l445-156L600,0L452,54L331,3L0,48L231,352',
+    'M0,0l64,219L29,343l535,30L478,37l-133,4L0,0z',
+    'M0,65l16,138l96,107l270-2L470,0L337,4L0,65z',
+  ];
+  paths.forEach((d, i) => {
+    const shape = new Path({ strokeColor: 'rgba(255,255,255,0.3)', strokeWidth: 2, parent: shapeGroup });
+    shape.pathData = d;
+    shape.scale(2);
+    shape.position = positionArray[i];
+  });
+}
+initializeShapes();
+
+view.onFrame = (e) => {
+  if (e.count % 4 === 0) shapeGroup.children.forEach((s, i) => s.rotate(i % 2 ? 0.1 : -0.1));
+};
 </script>
 
 </body>

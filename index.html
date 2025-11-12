@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  /* === your existing CSS kept unchanged === */
   body {
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -17,6 +16,7 @@
     flex-direction: column;
     min-height: 100vh;
   }
+
   header {
     display: flex;
     justify-content: space-between;
@@ -27,18 +27,21 @@
     top: 0;
     z-index: 100;
   }
+
   header img {
     height: 50px;
     cursor: pointer;
     transition: transform 0.3s;
   }
   header img:hover { transform: scale(1.05); }
+
   nav {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
   }
+
   nav a {
     text-decoration: none;
     color: white;
@@ -48,11 +51,14 @@
     transition: all 0.3s;
   }
   nav a:hover { background: #e67e22; }
+
+  /* Profile icon */
   .profile-container {
     position: relative;
     display: inline-block;
     margin: 10px 0 0 20px;
   }
+
   .profile-icon {
     width: 50px;
     height: 50px;
@@ -68,6 +74,7 @@
     user-select: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
+
   .profile-card {
     display: none;
     position: absolute;
@@ -82,7 +89,12 @@
     z-index: 1000;
     text-align: center;
   }
-  .profile-card p { font-size: 0.9rem; margin: 8px 0; }
+
+  .profile-card p {
+    font-size: 0.9rem;
+    margin: 8px 0;
+  }
+
   .profile-photo-container {
     width: 70px;
     height: 70px;
@@ -90,12 +102,14 @@
     border-radius: 50%;
     overflow: hidden;
   }
+
   .profile-photo-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  #change-photo-btn {
+
+  #change-photo-btn, #logout-btn {
     margin-top: 10px;
     padding: 6px 12px;
     border: none;
@@ -104,7 +118,8 @@
     color: white;
     cursor: pointer;
   }
-  #change-photo-btn:hover { background: darkorange; }
+  #change-photo-btn:hover, #logout-btn:hover { background: darkorange; }
+
   .page-strip {
     background: linear-gradient(90deg, #ff7f50, #ffb07f);
     color: #fff;
@@ -113,22 +128,26 @@
     font-weight: 700;
     padding: 20px 0;
   }
+
   main {
     flex: 1;
     padding: 30px 15px;
     text-align: center;
   }
+
   main h1 {
     font-size: 2rem;
     margin-bottom: 20px;
     color: #d35400;
   }
+
   main p {
     font-size: 1.1rem;
     line-height: 1.6;
     margin: 0 auto 40px;
     max-width: 700px;
   }
+
   .highlights {
     display: flex;
     flex-wrap: wrap;
@@ -136,6 +155,7 @@
     gap: 20px;
     margin-top: 20px;
   }
+
   .highlight-card {
     background: #fff;
     border-radius: 15px;
@@ -146,13 +166,30 @@
     cursor: pointer;
     position: relative;
   }
+
   .highlight-card:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 8px 15px rgba(0,0,0,0.15);
   }
-  .highlight-card img { width: 100%; height: 160px; object-fit: cover; }
-  .highlight-card h3 { margin: 10px 0; color: #ff7f50; font-size: 1.2rem; }
-  .highlight-card p { padding: 0 12px 12px 12px; font-size: 0.95rem; color: #555; }
+
+  .highlight-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+
+  .highlight-card h3 {
+    margin: 10px 0;
+    color: #ff7f50;
+    font-size: 1.2rem;
+  }
+
+  .highlight-card p {
+    padding: 0 12px 12px 12px;
+    font-size: 0.95rem;
+    color: #555;
+  }
+
   .btn {
     display: inline-block;
     font-size: 1rem;
@@ -165,21 +202,29 @@
     transition: background 0.3s;
   }
   .btn:hover { background-color: darkorange; }
+
   footer {
     background: #333;
     color: white;
     padding: 30px 20px;
     text-align: center;
   }
-  footer a { color: #ff7f50; margin: 0 10px; text-decoration: none; font-size: 1.2rem; }
+  footer a {
+    color: #ff7f50;
+    margin: 0 10px;
+    text-decoration: none;
+    font-size: 1.2rem;
+  }
   footer a:hover { color: #fff; }
   .footer-social { margin-top: 15px; }
   .footer-social a { margin: 0 10px; }
+
   @media (max-width: 768px) {
     main h1 { font-size: 1.8rem; }
     main p { font-size: 1rem; }
     .highlight-card { width: 45%; }
   }
+
   @media (max-width: 480px) {
     header { flex-direction: column; gap: 10px; }
     nav { flex-direction: column; }
@@ -199,13 +244,13 @@
     <a href="recipe-generator.html">Find My Recipe</a>
     <a href="about.html">About</a>
     <a href="login.html" id="login-link">Login</a>
-    <a href="#" id="logout-link" style="display:none;">Logout</a>
   </nav>
 </header>
 
 <div class="page-strip">Welcome to Maha Recipe Hub</div>
 
-<div class="profile-container" style="display:none;" id="profile-container">
+<!-- Profile Section -->
+<div class="profile-container" id="profile-container" style="display:none;">
   <div class="profile-icon" id="profile-icon">AB</div>
   <div class="profile-card" id="profile-card">
     <div class="profile-photo-container">
@@ -213,9 +258,9 @@
       <input type="file" id="upload-photo" accept="image/*" style="display:none;">
     </div>
     <p><strong>Username:</strong> <span id="profile-username"></span></p>
-    <p><strong>User ID:</strong> <span id="profile-id"></span></p>
     <p><strong>Email:</strong> <span id="profile-email"></span></p>
     <button id="change-photo-btn">Change Photo</button>
+    <button id="logout-btn">Logout</button>
   </div>
 </div>
 
@@ -225,39 +270,17 @@
   <hr style="width:50%; margin:30px auto; border:1px solid orange; border-radius:5px; margin-top:30px">
   <p>
     Discover the taste of Maharashtra with <strong>Maha Recipe Hub</strong> – your go-to place for authentic and modern Maharashtrian recipes. 
-    From traditional delights like Puran Poli, Misal Pav, and Ukadiche Modak to quick snacks and festive specials, 
-    we bring step-by-step recipes, tips, and cooking inspiration straight to your kitchen.
   </p>
 
   <h1 style="margin-top:60px;">Highlights</h1>
   <hr style="width:50%; margin:30px auto; border:1px solid orange; border-radius:5px; margin-bottom:30px">
 
   <div class="highlights">
-    <div class="highlight-card" data-id="1">
-      <img src="Puran Poli.png" alt="Puran Poli">
-      <h3>Puran Poli</h3>
-      <p>Traditional Maharashtrian Sweet</p>
-    </div>
-    <div class="highlight-card" data-id="2">
-      <img src="Ukidiche modak.png" alt="Ukadiche Modak">
-      <h3>Ukadiche Modak</h3>
-      <p>Ganesh Festival Special</p>
-    </div>
-    <div class="highlight-card" data-id="3">
-      <img src="Pohe.png" alt="Pohe">
-      <h3>Pohe</h3>
-      <p>Popular Maharashtrian Breakfast</p>
-    </div>
-    <div class="highlight-card" data-id="4">
-      <img src="Kolhapuri MuttonRassa.png" alt="Kolhapuri Mutton Rassa">
-      <h3>Kolhapuri Mutton Rassa</h3>
-      <p>Spicy Maharashtrian Curry</p>
-    </div>
-    <div class="highlight-card" data-id="5">
-      <img src="Misal Pav.png" alt="Misal Pav">
-      <h3>Misal Pav</h3>
-      <p>Street Food Special</p>
-    </div>
+    <div class="highlight-card"><img src="Puran Poli.png" alt="Puran Poli"><h3>Puran Poli</h3><p>Traditional Sweet</p></div>
+    <div class="highlight-card"><img src="Ukidiche modak.png" alt="Ukadiche Modak"><h3>Ukadiche Modak</h3><p>Ganesh Special</p></div>
+    <div class="highlight-card"><img src="Pohe.png" alt="Pohe"><h3>Pohe</h3><p>Breakfast</p></div>
+    <div class="highlight-card"><img src="Kolhapuri MuttonRassa.png" alt="Kolhapuri Mutton Rassa"><h3>Mutton Rassa</h3><p>Spicy Curry</p></div>
+    <div class="highlight-card"><img src="Misal Pav.png" alt="Misal Pav"><h3>Misal Pav</h3><p>Street Food</p></div>
   </div>
 
   <a class="btn" href="explore.html">Explore More</a>
@@ -274,92 +297,71 @@
 </footer>
 
 <script>
-const { createClient } = supabase;
-const supabaseUrl = "https://YOUR-PROJECT-URL.supabase.co"; // replace
-const supabaseKey = "YOUR-ANON-KEY"; // replace
-const supabaseClient = createClient(supabaseUrl, supabaseKey);
+// Supabase connection
+const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const loginLink = document.getElementById('login-link');
-const logoutLink = document.getElementById('logout-link');
-const profileContainer = document.getElementById('profile-container');
-const profileIcon = document.getElementById('profile-icon');
-const profileCard = document.getElementById('profile-card');
-const profileUsername = document.getElementById('profile-username');
-const profileId = document.getElementById('profile-id');
-const profileEmail = document.getElementById('profile-email');
-const profilePhoto = document.getElementById('profile-photo');
-const uploadPhoto = document.getElementById('upload-photo');
-const changePhotoBtn = document.getElementById('change-photo-btn');
+const loginLink = document.getElementById("login-link");
+const profileContainer = document.getElementById("profile-container");
+const profileIcon = document.getElementById("profile-icon");
+const profileCard = document.getElementById("profile-card");
+const profileUsername = document.getElementById("profile-username");
+const profileEmail = document.getElementById("profile-email");
+const profilePhoto = document.getElementById("profile-photo");
+const uploadPhoto = document.getElementById("upload-photo");
+const changePhotoBtn = document.getElementById("change-photo-btn");
+const logoutBtn = document.getElementById("logout-btn");
 
-async function checkUser() {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (user) {
-    loginLink.style.display = "none";
-    logoutLink.style.display = "inline";
-    profileContainer.style.display = "inline-block";
+let user = JSON.parse(localStorage.getItem("user"));
 
-    const { data: userData } = await supabaseClient
-      .from('users')
-      .select('*')
-      .eq('email', user.email)
-      .single();
-
-    if (userData) {
-      profileUsername.textContent = userData.username;
-      profileId.textContent = userData.id;
-      profileEmail.textContent = userData.email;
-      if (userData.photo_url) {
-        profilePhoto.src = userData.photo_url;
-        profileIcon.textContent = "";
-      } else {
-        profileIcon.textContent = userData.username[0].toUpperCase();
-      }
-    }
+// Initialize Profile
+if (user) {
+  loginLink.style.display = "none";
+  profileContainer.style.display = "inline-block";
+  profileUsername.textContent = user.username;
+  profileEmail.textContent = user.email;
+  if (user.photo_url) {
+    profilePhoto.src = user.photo_url;
+    profileIcon.textContent = "";
   } else {
-    loginLink.style.display = "inline";
-    logoutLink.style.display = "none";
-    profileContainer.style.display = "none";
+    profileIcon.textContent = user.username.charAt(0).toUpperCase();
   }
 }
 
-checkUser();
-
-// Logout
-logoutLink.addEventListener('click', async () => {
-  await supabaseClient.auth.signOut();
-  localStorage.clear();
-  window.location.reload();
-});
-
-// Profile toggle
+// Toggle profile card
 profileIcon.addEventListener("click", () => {
   profileCard.style.display = profileCard.style.display === "block" ? "none" : "block";
 });
-document.addEventListener("click", e => {
-  if (!profileCard.contains(e.target) && e.target !== profileIcon) {
-    profileCard.style.display = "none";
-  }
+
+// Logout
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("user");
+  location.reload();
 });
 
-// Change profile photo
+// Change photo upload to Supabase
 changePhotoBtn.addEventListener("click", () => uploadPhoto.click());
+
 uploadPhoto.addEventListener("change", async (e) => {
   const file = e.target.files[0];
-  const { data, error } = await supabaseClient.storage
-    .from('profile_photos')
-    .upload(`user_${Date.now()}.png`, file, { upsert: true });
+  if (!file || !user) return;
 
-  if (!error) {
-    const url = `${supabaseUrl}/storage/v1/object/public/profile_photos/${data.path}`;
-    await supabaseClient
-      .from('users')
-      .update({ photo_url: url })
-      .eq('email', profileEmail.textContent);
-    profilePhoto.src = url;
+  const fileName = `${user.username}_${Date.now()}.${file.name.split(".").pop()}`;
+  const { data, error } = await supabase.storage.from("avatars").upload(fileName, file, { upsert: true });
+
+  if (error) {
+    alert("Error uploading photo.");
+    return;
+  }
+
+  const { data: publicURL } = supabase.storage.from("avatars").getPublicUrl(fileName);
+  if (publicURL?.publicUrl) {
+    profilePhoto.src = publicURL.publicUrl;
     profileIcon.textContent = "";
-    alert("Profile photo updated!");
-  } else {
-    alert("Failed to upload image.");
+    user.photo_url = publicURL.publicUrl;
+    localStorage.setItem("user", JSON.stringify(user));
+    await supabase.from("users").update({ photo_url: publicURL.publicUrl }).eq("email", user.email);
   }
 });
 </script>

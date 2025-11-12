@@ -264,11 +264,6 @@ const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  async function loadRecipes() {
-  const { data, error } = await client.from("recipes").select("*");
-  console.log("📦 Data from Supabase:", data);
-  console.log("⚠️ Error (if any):", error);
-
 const recipeList = document.getElementById("recipe-list");
 const searchInput = document.getElementById("searchInput");
 const filterButtons = document.querySelectorAll(".filter-tags button");
@@ -286,6 +281,7 @@ async function loadRecipes() {
     status.textContent = "Failed to load recipes.";
     return;
   }
+
   status.style.display = "none";
   recipes = data;
   renderRecipes(data);
@@ -297,12 +293,13 @@ function renderRecipes(list) {
     recipeList.innerHTML = "<p style='text-align:center;width:100%'>No recipes found!</p>";
     return;
   }
+
   list.forEach(r => {
     const tags = r.type ? r.type.split(",").map(t => `<span class='recipe-tag'>${t.trim()}</span>`).join("") : "";
     const card = document.createElement("div");
     card.className = "recipe-card";
     card.innerHTML = `
-      <img src="${r.image_url}">
+      <img src="${r.image_url}" alt="${r.name}">
       <h3>${r.name}</h3>
       <div class="recipe-tags">${tags}</div>
       <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
@@ -326,17 +323,19 @@ sortSelect.addEventListener("change", filterRecipes);
 function filterRecipes() {
   const searchTerm = searchInput.value.toLowerCase();
   let filtered = recipes.filter(r => {
-    const matchesSearch = r.name.toLowerCase().includes(searchTerm) ||
+    const matchesSearch =
+      r.name.toLowerCase().includes(searchTerm) ||
       (r.ingredients && r.ingredients.toLowerCase().includes(searchTerm));
-    const matchesType = currentFilter === "all" ||
+    const matchesType =
+      currentFilter === "all" ||
       (r.type && r.type.toLowerCase().includes(currentFilter));
     return matchesSearch && matchesType;
   });
 
   const sortValue = sortSelect.value;
-  if (sortValue === "a-z") filtered.sort((a,b)=>a.name.localeCompare(b.name));
-  if (sortValue === "newest") filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if (sortValue === "popular") filtered.sort((a,b)=>(b.likes||0)-(a.likes||0));
+  if (sortValue === "a-z") filtered.sort((a, b) => a.name.localeCompare(b.name));
+  if (sortValue === "newest") filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  if (sortValue === "popular") filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
 
   renderRecipes(filtered);
 }
@@ -355,13 +354,18 @@ function checkLogin() {
     logoutLink.style.display = "inline";
   }
 }
-logoutLink.onclick = () => { localStorage.removeItem("username"); location.reload(); };
-checkLogin();
 
+logoutLink.onclick = () => {
+  localStorage.removeItem("username");
+  location.reload();
+};
+
+checkLogin();
 loadRecipes();
 </script>
 </body>
 </html>
+
 
 
 

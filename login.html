@@ -6,141 +6,116 @@
 <title>Login - Maha Recipe Hub</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    height: 100vh;
-    background: linear-gradient(135deg, #ffb07f, #ff7f50);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .login-container {
-    background: #fff;
-    padding: 40px 35px;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    width: 340px;
-    text-align: center;
-  }
-
-  h2 {
-    margin-bottom: 25px;
-    color: #ff7f50;
-  }
-
-  .input-field {
-    position: relative;
-    margin-bottom: 20px;
-  }
-
-  .input-field input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1.5px solid #ffb07f;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border 0.3s;
-  }
-
-  .input-field input:focus {
-    border-color: #ff7f50;
-  }
-
-  button {
-    width: 100%;
-    padding: 12px;
-    background: #ff7f50;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-  button:hover {
-    background: #e56e3f;
-  }
-
-  .back-btn {
-    background: transparent;
-    color: #ff7f50;
-    border: 2px solid #ff7f50;
-    margin-top: 10px;
-  }
-
-  .back-btn:hover {
-    background: #ff7f50;
-    color: white;
-  }
-
-  p {
-    margin-top: 15px;
-    font-size: 0.9rem;
-    color: red;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background: #fffaf2;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.login-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 340px;
+  text-align: center;
+}
+h2 {
+  color: #ff7f50;
+  margin-bottom: 20px;
+}
+input {
+  width: 90%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+button {
+  width: 95%;
+  padding: 10px;
+  background: #ff7f50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+button:hover {
+  background: #e56e3f;
+}
+p {
+  color: red;
+  font-size: 0.9rem;
+}
+a {
+  color: #ff7f50;
+  text-decoration: none;
+  font-weight: bold;
+}
+a:hover {
+  text-decoration: underline;
+}
+.extra-links {
+  margin-top: 10px;
+}
 </style>
 </head>
 <body>
 
-<div class="login-container">
-  <h2>Login to Maha Recipe Hub</h2>
-  <div class="input-field">
-    <input type="email" id="email" placeholder="Enter your email">
-  </div>
-  <div class="input-field">
-    <input type="text" id="username" placeholder="Enter your username">
-  </div>
-  <div class="input-field">
-    <input type="password" id="password" placeholder="Enter your password">
-  </div>
+<div class="login-box">
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Enter email">
+  <input type="text" id="username" placeholder="Enter username">
+  <input type="password" id="password" placeholder="Enter password">
   <button onclick="loginUser()">Login</button>
-  <button class="back-btn" onclick="window.location.href='index.html'">← Back to Home</button>
   <p id="message"></p>
+
+  <div class="extra-links">
+    <p>Don’t have an account? <a href="signup.html">Sign Up</a></p>
+    <a href="index.html">← Back to Home</a>
+  </div>
 </div>
 
 <script>
-  // Supabase connection
-  const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
-  const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  async function loginUser() {
-    const email = document.getElementById("email").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const message = document.getElementById("message");
+async function loginUser() {
+  const email = document.getElementById("email").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const message = document.getElementById("message");
 
-    if (!email && !username) {
-      message.textContent = "Enter either email or username.";
-      return;
-    }
-    if (!password) {
-      message.textContent = "Please enter your password.";
-      return;
-    }
-
-    let query = client.from("users").select("*").eq("password", password);
-    if (email) query = query.eq("email", email);
-    else query = query.eq("username", username);
-
-    const { data, error } = await query.maybeSingle();
-
-    if (error || !data) {
-      message.textContent = "Invalid credentials. Try again.";
-      message.style.color = "red";
-    } else {
-      localStorage.setItem("user", JSON.stringify(data));
-      message.style.color = "green";
-      message.textContent = "Login successful! Redirecting...";
-      setTimeout(() => window.location.href = "index.html", 1000);
-    }
+  if (!email || !username || !password) {
+    message.textContent = "Please fill out all fields.";
+    return;
   }
+
+  const { data, error } = await client
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .eq("username", username)
+    .eq("password", password)
+    .single();
+
+  if (error || !data) {
+    console.error(error);
+    message.textContent = "Invalid credentials. Try again.";
+    message.style.color = "red";
+  } else {
+    localStorage.setItem("user", JSON.stringify(data));
+    message.style.color = "green";
+    message.textContent = "Login successful! Redirecting...";
+    setTimeout(() => window.location.href = "index.html", 1000);
+  }
+}
 </script>
 
 </body>

@@ -275,6 +275,7 @@ let currentFilter = "all";
 async function loadRecipes() {
   const { data, error } = await client.from("recipes").select("*");
   const status = document.getElementById("status");
+  console.log(data, error);
 
   if (error) {
     status.textContent = "Failed to load recipes.";
@@ -356,4 +357,5 @@ loadRecipes();
 </script>
 </body>
 </html>
+
 

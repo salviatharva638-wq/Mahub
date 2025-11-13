@@ -390,11 +390,11 @@ function renderRecipes(list) {
   document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
 }
 
-// ✅ Favorite toggle (with Supabase insert/delete)
 async function toggleFavorite(e) {
   e.stopPropagation();
   const recipeId = e.currentTarget.dataset.id;
   const user = localStorage.getItem("username");
+
   if (!user) {
     alert("Please login first!");
     return;
@@ -403,7 +403,6 @@ async function toggleFavorite(e) {
   const isFav = favorites.includes(recipeId);
 
   if (isFav) {
-    // remove from favorites
     const { error } = await client
       .from("favorites")
       .delete()
@@ -411,36 +410,15 @@ async function toggleFavorite(e) {
       .eq("user_id", user);
     if (!error) favorites = favorites.filter(f => f !== recipeId);
   } else {
-    // add to favorites
     const { error } = await client
       .from("favorites")
       .insert([{ recipe_id: recipeId, user_id: user }]);
     if (!error) favorites.push(recipeId);
   }
 
-  renderRecipes(recipes); // re-render cards with updated heart color
+  renderRecipes(recipes);
 }
 
-
-
-  if (!user) {
-    alert("Please login first!");
-    return;
-  }
-
-  const isFav = favorites.includes(recipeId);
-  btn.classList.toggle("active"); // instant UI update
-
-  if (isFav) {
-    await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", user);
-    favorites = favorites.filter(f => f !== recipeId);
-    btn.innerHTML = `<i class="far fa-heart"></i>`;
-  } else {
-    await client.from("favorites").insert([{ recipe_id: recipeId, user_id: user }]);
-    favorites.push(recipeId);
-    btn.innerHTML = `<i class="fas fa-heart"></i>`;
-  }
-}
 
 async function addLike(e) {
   e.stopPropagation();
@@ -520,6 +498,7 @@ loadRecipes();
 
 </body>
 </html>
+
 
 
 

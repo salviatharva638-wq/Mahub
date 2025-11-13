@@ -319,10 +319,16 @@
 <footer>© 2025 Maha Recipe Hub | Crafted with ❤️ for every flavor of Maharashtra</footer>
 
 <script>
+/* =========================
+   Configuration & Client
+   ========================= */
 const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+/* =========================
+   Elements / State
+   ========================= */
 const recipeList = document.getElementById("recipe-list");
 const searchInput = document.getElementById("searchInput");
 const sortSelect = document.getElementById("sortSelect");
@@ -332,176 +338,346 @@ const profileMenu = document.getElementById("profile-menu");
 const loginLink = document.getElementById("login-link");
 const logoutLink = document.getElementById("logout-link");
 const logoutMenuLink = document.getElementById("logout-menu-link");
+const statusEl = document.getElementById("status");
 
 let recipes = [];
-let favorites = [];
+let favorites = [];        // array of recipe ids (strings)
+let currentFilter = "all"; // tag filter
+let currentSearch = "";
 
-async function loadRecipes() {
-  const { data, error } = await client.from("recipes").select("*");
-  const status = document.getElementById("status");
-  if (error) {
-    status.textContent = "Failed to load recipes.";
-    return;
+/* =========================
+   Helpers
+   ========================= */
+function getCurrentUserKey() {
+  // prefer stored user_id (UUID) if available, else username string
+  return localStorage.getItem("user_id") || localStorage.getItem("username") || null;
+}
+
+function safeString(x){ return x === null || x === undefined ? "" : String(x); }
+
+/* =========================
+   Load recipes & favorites
+   ========================= */
+async function loadRecipes(){
+  statusEl.textContent = "Loading recipes...";
+  try {
+    const { data, error } = await client.from("recipes").select("*");
+    if (error) throw error;
+    recipes = (data || []).map(r => {
+      // normalize fields we will use
+      return {
+        ...r,
+        id: safeString(r.id),
+        name: safeString(r.name),
+        description: r.description || "",
+        image_url: r.image_url || "",
+        category: safeString(r.category),
+        type: safeString(r.type),
+        ingredients: safeString(r.ingredients),
+        likes: Number(r.likes) || 0,
+        cooking_time: r.cooking_time != null ? Number(r.cooking_time) : null,
+        rank: r.rank != null ? Number(r.rank) : null
+      };
+    });
+    await loadFavorites();
+    statusEl.style.display = "none";
+    applyFiltersAndRender();
+  } catch (err) {
+    console.error("Error loading recipes:", err);
+    statusEl.textContent = "Failed to load recipes.";
   }
-  status.style.display = "none";
-  recipes = data;
-  await loadFavorites();
-renderRecipes(recipes);
 }
 
-async function loadFavorites() {
-  const user = localStorage.getItem("username");
-  if (!user) return;
-  const { data } = await client.from("favorites").select("recipe_id").eq("user_id", user);
-  favorites = data ? data.map(f => f.recipe_id) : [];
+async function loadFavorites(){
+  // fetch all favorites (server-side filtering might fail if column name differs),
+  // so we fetch and filter client-side for robustness.
+  const userKey = getCurrentUserKey();
+  if (!userKey) { favorites = []; return; }
+
+  try {
+    const { data, error } = await client.from("favorites").select("*");
+    if (error) {
+      // If table missing or other error, just log and continue
+      console.warn("Could not fetch favorites table:", error);
+      favorites = [];
+      return;
+    }
+    // Accept both possible column names (user_id or username)
+    favorites = (data || [])
+      .filter(f => {
+        // f may have user_id or username or user columns
+        const a = f.user_id ?? f.username ?? f.user ?? f.uid ?? null;
+        return a != null && String(a) === String(userKey);
+      })
+      .map(f => String(f.recipe_id));
+  } catch (err) {
+    console.error("Error fetching favorites:", err);
+    favorites = [];
+  }
 }
 
-function renderRecipes(list) {
+/* =========================
+   Rendering
+   ========================= */
+function renderRecipes(list){
   recipeList.innerHTML = "";
-  if (list.length === 0) {
+  if (!list || list.length === 0) {
     recipeList.innerHTML = "<p style='text-align:center;width:100%'>No recipes found!</p>";
     return;
   }
 
   list.forEach((r, i) => {
-    const rank = i + 1;
-    const tags = `
-      <div class="recipe-tags">
-        <span class="recipe-tag">${r.category || "General"}</span>
-        <span class="recipe-tag">${r.type || "Food"}</span>
-      </div>`;
-    const isFav = favorites.includes(r.id);
+    const rank = r.rank != null ? r.rank : (i + 1);
+    const isFav = favorites.includes(String(r.id));
     const card = document.createElement("div");
     card.className = "recipe-card";
     card.innerHTML = `
       <div class="rank-badge">#${rank}</div>
-      <img src="${r.image_url}">
-      <h3>${r.name}</h3>
-      ${tags}
-      <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
+      <img src="${r.image_url || 'https://via.placeholder.com/400x300?text=No+Image'}" alt="${escapeHtml(r.name)}">
+      <h3>${escapeHtml(r.name)}</h3>
+      <div class="recipe-tags">
+        <span class="recipe-tag">${escapeHtml(r.category || "General")}</span>
+        <span class="recipe-tag">${escapeHtml(r.type || "Food")}</span>
+      </div>
+      <p>${escapeHtml(r.description ? r.description.slice(0, 80) + "..." : "")}</p>
       <div class="card-actions">
-        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${r.id}"><i class="fa${isFav ? 's' : 'r'} fa-heart"></i></button>
-        <button class="like-btn" data-id="${r.id}"><i class="fa fa-thumbs-up"></i> ${r.likes || 0}</button>
-      </div>`;
+        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${r.id}" title="${isFav ? 'Remove from favourites' : 'Add to favourites'}">
+          <i class="fa${isFav ? 's' : 'r'} fa-heart"></i>
+        </button>
+        <button class="like-btn" data-id="${r.id}" title="Like">
+          <i class="fa fa-thumbs-up"></i> ${r.likes || 0}
+        </button>
+      </div>
+    `;
+    // card click -> open detail page
+    card.addEventListener("click", (ev) => {
+      // if click on the buttons, don't navigate
+      if (ev.target.closest(".card-actions")) return;
+      // navigate to detail (id is UUID string)
+      window.location.href = `recipe-detail.html?id=${encodeURIComponent(r.id)}`;
+    });
+
     recipeList.appendChild(card);
   });
 
-  document.querySelectorAll(".fav-btn").forEach(btn => btn.onclick = toggleFavorite);
-  document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
+  // attach handlers
+  document.querySelectorAll(".fav-btn").forEach(btn => {
+    btn.onclick = (e) => toggleFavorite(e);
+  });
+  document.querySelectorAll(".like-btn").forEach(btn => {
+    btn.onclick = (e) => addLike(e);
+  });
 }
+
+/* =========================
+   Filters & Search
+   ========================= */
+function applyFiltersAndRender(){
+  const searchTerm = (currentSearch || "").trim().toLowerCase();
+  let filtered = recipes.filter(r => {
+    // filter by tag
+    const matchTag = currentFilter === "all" ||
+      (String(r.type || "").toLowerCase().includes(currentFilter)) ||
+      (String(r.category || "").toLowerCase().includes(currentFilter)) ||
+      (String(r.name || "").toLowerCase().includes(currentFilter));
+
+    // search by name, ingredients, category, type
+    const matchSearch = !searchTerm ||
+      (r.name && r.name.toLowerCase().includes(searchTerm)) ||
+      (r.ingredients && r.ingredients.toLowerCase().includes(searchTerm)) ||
+      (r.category && r.category.toLowerCase().includes(searchTerm)) ||
+      (r.type && r.type.toLowerCase().includes(searchTerm));
+
+    return matchTag && matchSearch;
+  });
+
+  // sorting
+  const sortVal = sortSelect.value;
+  if (sortVal === "popular") {
+    filtered.sort((a,b)=>(b.likes || 0) - (a.likes || 0));
+  } else if (sortVal === "quick") {
+    // quick = less cooking_time first (cooking_time is int2)
+    filtered.sort((a,b) => {
+      const ta = a.cooking_time != null ? a.cooking_time : 9999;
+      const tb = b.cooking_time != null ? b.cooking_time : 9999;
+      return ta - tb;
+    });
+  } else {
+    filtered.sort((a,b) => (a.name || "").localeCompare(b.name || ""));
+  }
+
+  renderRecipes(filtered);
+}
+
+/* =========================
+   Interactions: Favorites & Likes
+   ========================= */
 
 async function toggleFavorite(e) {
   e.stopPropagation();
-  const recipeId = e.currentTarget.dataset.id;
-  const user = localStorage.getItem("username");
-
-  if (!user) {
+  const btn = e.currentTarget;
+  const recipeId = String(btn.dataset.id);
+  const userKey = getCurrentUserKey();
+  if (!userKey) {
     alert("Please login first!");
     return;
   }
 
   const isFav = favorites.includes(recipeId);
 
-  if (isFav) {
-    const { error } = await client
-      .from("favorites")
-      .delete()
-      .eq("recipe_id", recipeId)
-      .eq("user_id", user);
-    if (!error) favorites = favorites.filter(f => f !== recipeId);
-  } else {
-    const { error } = await client
-      .from("favorites")
-      .insert([{ recipe_id: recipeId, user_id: user }]);
-    if (!error) favorites.push(recipeId);
+  try {
+    if (isFav) {
+      // try to delete by common column names
+      let deleted = false;
+      // try user_id
+      let res = await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", userKey);
+      if (!res.error && res.count !== 0) deleted = true;
+      // if not deleted, try username column
+      if (!deleted) {
+        res = await client.from("favorites").delete().eq("recipe_id", recipeId).eq("username", userKey);
+        if (!res.error && res.count !== 0) deleted = true;
+      }
+      // fallback: delete any row matching recipe and userKey in any common column (best-effort)
+      if (!deleted) {
+        await client.from("favorites").delete().or(`user_id.eq.${userKey},username.eq.${userKey}`).eq("recipe_id", recipeId);
+      }
+      favorites = favorites.filter(f => f !== recipeId);
+      // immediate UI change: change button icon
+      btn.classList.remove("active");
+      btn.innerHTML = `<i class="far fa-heart"></i>`;
+    } else {
+      // insert: try to insert with user_id; if fails, try username
+      let insertRes = await client.from("favorites").insert([{ recipe_id: recipeId, user_id: userKey }]);
+      if (insertRes.error) {
+        // try username field
+        insertRes = await client.from("favorites").insert([{ recipe_id: recipeId, username: userKey }]);
+      }
+      // if still error, log but continue
+      if (insertRes.error) {
+        console.warn("Insert favourite error (attempted user_id/username):", insertRes.error);
+      } else {
+        favorites.push(recipeId);
+        btn.classList.add("active");
+        btn.innerHTML = `<i class="fas fa-heart"></i>`;
+      }
+    }
+  } catch (err) {
+    console.error("toggleFavorite error:", err);
   }
-
-  renderRecipes(recipes);
 }
-
 
 async function addLike(e) {
   e.stopPropagation();
   const btn = e.currentTarget;
-  const recipeId = parseInt(btn.dataset.id);
+  const recipeId = String(btn.dataset.id);
 
   // small animation
-  btn.style.transform = "scale(1.3)";
-  setTimeout(() => btn.style.transform = "scale(1)", 200);
+  btn.style.transform = "scale(1.2)";
+  setTimeout(() => btn.style.transform = "", 180);
 
-  // fetch latest recipe data from Supabase
-  const { data: recipeData, error } = await client
-    .from("recipes")
-    .select("likes")
-    .eq("id", recipeId)
-    .single();
+  try {
+    // fetch latest likes for the recipe
+    const { data: recipeData, error } = await client.from("recipes")
+      .select("likes")
+      .eq("id", recipeId)
+      .single();
 
-  if (error) {
-    console.error("Error fetching likes:", error);
-    return;
+    if (error) {
+      console.error("Error fetching likes:", error);
+      return;
+    }
+
+    const newLikes = (recipeData?.likes || 0) + 1;
+
+    const { error: updateError } = await client.from("recipes")
+      .update({ likes: newLikes })
+      .eq("id", recipeId);
+
+    if (updateError) {
+      console.error("Error updating likes:", updateError);
+      return;
+    }
+
+    // update local copy so sorting/rerender reflect it
+    const r = recipes.find(x => String(x.id) === recipeId);
+    if (r) r.likes = newLikes;
+
+    // update button UI without full reload
+    btn.innerHTML = `<i class="fa fa-thumbs-up"></i> ${newLikes}`;
+  } catch (err) {
+    console.error("addLike error:", err);
   }
-
-  const newLikes = (recipeData.likes || 0) + 1;
-
-  const { error: updateError } = await client
-    .from("recipes")
-    .update({ likes: newLikes })
-    .eq("id", recipeId);
-
-  if (updateError) {
-    console.error("Error updating likes:", updateError);
-    return;
-  }
-
-  // reflect immediately on button
-  btn.innerHTML = `<i class="fa fa-thumbs-up"></i> ${newLikes}`;
 }
 
-  
-sortSelect.addEventListener("change", () => {
-  if (sortSelect.value === "quick") recipes.sort((a,b)=>a.time-b.time);
-  else if (sortSelect.value === "popular") recipes.sort((a,b)=>(b.likes||0)-(a.likes||0));
-  else recipes.sort((a,b)=>a.name.localeCompare(b.name));
-  renderRecipes(recipes);
+/* =========================
+   Event wiring
+   ========================= */
+
+// search input
+searchInput.addEventListener("input", (e) => {
+  currentSearch = e.target.value || "";
+  applyFiltersAndRender();
 });
 
-// Profile menu toggle
-profileLink.addEventListener("click", () => {
+// filter buttons
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.type || "all";
+    applyFiltersAndRender();
+  });
+});
+
+// sort select
+sortSelect.addEventListener("change", () => applyFiltersAndRender());
+
+// profile menu
+profileLink.addEventListener("click", (e) => {
   profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
 });
-
 document.addEventListener("click", (e) => {
-  if (!profileLink.contains(e.target)) profileMenu.style.display = "none";
+  if (!profileLink.contains(e.target) && !profileMenu.contains(e.target)) profileMenu.style.display = "none";
 });
 
-// Login check
-function checkLogin() {
-  const user = localStorage.getItem("username");
+// login/logout UI
+function checkLogin(){
+  const user = getCurrentUserKey();
   if (user) {
     loginLink.style.display = "none";
-    logoutLink.style.display = "none";
+    logoutLink.style.display = "inline-block";
     profileLink.style.display = "flex";
   } else {
-    profileLink.style.display = "none";
     loginLink.style.display = "inline-block";
+    logoutLink.style.display = "none";
+    profileLink.style.display = "none";
   }
 }
-
 logoutMenuLink.addEventListener("click", () => {
   localStorage.removeItem("username");
+  localStorage.removeItem("user_id");
   location.reload();
 });
 
+/* =========================
+   Utility
+   ========================= */
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* =========================
+   Init
+   ========================= */
 checkLogin();
 loadRecipes();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-

@@ -391,32 +391,45 @@ function renderRecipes(list) {
 
 async function toggleFavorite(e) {
   e.stopPropagation();
-  const recipeId = parseInt(e.currentTarget.dataset.id);
+  const btn = e.currentTarget;
+  const recipeId = parseInt(btn.dataset.id);
   const user = localStorage.getItem("username");
-  if (!user) return alert("Please login first!");
+
+  if (!user) {
+    alert("Please login first!");
+    return;
+  }
+
   const isFav = favorites.includes(recipeId);
+  btn.classList.toggle("active"); // instant UI update
+
   if (isFav) {
     await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", user);
     favorites = favorites.filter(f => f !== recipeId);
+    btn.innerHTML = `<i class="far fa-heart"></i>`;
   } else {
     await client.from("favorites").insert([{ recipe_id: recipeId, user_id: user }]);
     favorites.push(recipeId);
+    btn.innerHTML = `<i class="fas fa-heart"></i>`;
   }
-  renderRecipes(recipes);
 }
 
 async function addLike(e) {
   e.stopPropagation();
   const btn = e.currentTarget;
-  btn.classList.add("animate");
-  setTimeout(() => btn.classList.remove("animate"), 300);
   const recipeId = parseInt(btn.dataset.id);
+
+  // small pop animation
+  btn.style.transform = "scale(1.3)";
+  setTimeout(() => btn.style.transform = "scale(1)", 200);
+
   const recipe = recipes.find(r => r.id === recipeId);
   recipe.likes = (recipe.likes || 0) + 1;
-  await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
-  renderRecipes(recipes);
-}
+  btn.innerHTML = `<i class="fa fa-thumbs-up"></i> ${recipe.likes}`;
 
+  await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
+}
+  
 sortSelect.addEventListener("change", () => {
   if (sortSelect.value === "quick") recipes.sort((a,b)=>a.time-b.time);
   else if (sortSelect.value === "popular") recipes.sort((a,b)=>(b.likes||0)-(a.likes||0));
@@ -457,4 +470,5 @@ loadRecipes();
 
 </body>
 </html>
+
 

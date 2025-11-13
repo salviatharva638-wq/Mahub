@@ -1,329 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Maha Recipe Hub – Explore</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maha Recipe Hub | Explore</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body {
-      font-family: "Poppins", sans-serif;
-      background: #fafafa;
+      font-family: 'Inter', sans-serif;
       margin: 0;
-      padding: 0;
+      background: #fffaf5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
-    /* Navbar */
-    .navbar {
+    /* 🔸 HEADER */
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #fff;
       padding: 10px 30px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      background: #fff;
+      border-bottom: 1px solid #eee;
       position: sticky;
       top: 0;
-      z-index: 10;
-    }
-    .navbar .logo {
-      display: flex;
-      align-items: center;
-    }
-    .navbar .logo img {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
-    }
-    .navbar .nav-links a {
-      text-decoration: none;
-      color: #333;
-      margin: 0 10px;
-      font-weight: 500;
-    }
-    .navbar .nav-links a.active {
-      color: #f05a28;
-    }
-
-    .profile-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .profile-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-    .profile-menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 48px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-      padding: 10px;
-      min-width: 140px;
-      text-align: left;
       z-index: 100;
     }
-    .profile-menu a {
+
+    header img {
+      height: 50px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    header img:hover {
+      transform: scale(1.05);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: .3s;
+    }
+
+    nav a:hover {
+      background: #ff7f50;
+      color: #fff;
+    }
+
+    .login-btn {
+      background: #ff7f50;
+      color: white;
+    }
+
+    #logout-link {
+      background: #ff4c4c;
+      color: white;
+    }
+
+    /* 🔸 Profile Icon */
+    #profile-link {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: #ff7f50;
+      color: white;
+      border-radius: 50px;
+      padding: 6px 10px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    #profile-link img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    #profile-menu {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 180px;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    #profile-menu a {
       display: block;
-      padding: 8px;
+      padding: 10px 15px;
       text-decoration: none;
       color: #333;
     }
-    .profile-menu a:hover {
-      background: #f4f4f4;
+
+    #profile-menu a:hover {
+      background: #ff7f50;
+      color: white;
     }
 
-    /* Recipes Grid */
-    #recipe-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
+    .page-strip {
+      background: linear-gradient(90deg, #ff7f50, #ffb07f);
+      color: white;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      padding: 20px 0;
     }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-container input, .search-container select {
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .filter-tags {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .filter-tags button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ffb07f;
+      color: white;
+      transition: .3s;
+    }
+
+    .filter-tags button.active,
+    .filter-tags button:hover {
+      background: #ff7f50;
+    }
+
+    /* 🔸 Recipe Cards */
+    .recipe-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin: auto;
+      max-width: 1200px;
+      padding-bottom: 50px;
+    }
+
     .recipe-card {
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-      padding: 10px;
-      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      width: 250px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      transition: .3s;
       text-align: center;
-      transition: transform 0.2s;
+      position: relative;
     }
+
     .recipe-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px) scale(1.02);
     }
+
     .recipe-card img {
       width: 100%;
-      height: 180px;
+      height: 160px;
       object-fit: cover;
-      border-radius: 8px;
     }
+
+    .recipe-card h3 {
+      color: #ff7f50;
+      margin: 12px 0 6px;
+    }
+
+    .recipe-card p {
+      padding: 0 12px 12px;
+      color: #555;
+    }
+
+    .recipe-tags {
+      margin-bottom: 8px;
+    }
+
+    .recipe-tag {
+      background: #ffe5d6;
+      color: #d35400;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      margin: 2px;
+      display: inline-block;
+    }
+
     .rank-badge {
       position: absolute;
       top: 10px;
       left: 10px;
-      background: #f05a28;
+      background: gold;
       color: white;
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: 0.9em;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.8rem;
     }
-    .recipe-tags span {
-      display: inline-block;
-      background: #f3f3f3;
-      color: #333;
-      border-radius: 5px;
-      padding: 3px 8px;
-      font-size: 0.8em;
-      margin: 3px;
-    }
+
     .card-actions {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      margin-top: 10px;
+      padding: 10px 15px;
+      border-top: 1px solid #eee;
     }
-    .fav-btn.active i {
-      color: #e63946;
-    }
-    button {
+
+    .card-actions button {
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 1em;
+      font-size: 1rem;
+      color: #ff7f50;
+      transition: transform 0.2s;
+    }
+
+    .card-actions button:hover {
+      transform: scale(1.2);
+    }
+
+    .fav-btn.active i {
+      color: red;
+    }
+
+    footer {
+      background: #333;
+      color: white;
+      padding: 25px;
+      text-align: center;
+      margin-top: auto;
     }
   </style>
 </head>
 
 <body>
-  <!-- 🌟 Navbar -->
-  <header class="navbar">
-    <div class="logo">
-      <img src="logo.png" alt="Maha Recipe Hub Logo" />
-      <h1>Maha Recipe Hub</h1>
+
+<header>
+  <img src="assets/logo.png" alt="Maha Recipe Hub Logo" onclick="window.location.href='index.html'">
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="explore.html" class="active">Explore</a>
+    <a href="about.html">About</a>
+    <a href="login.html" id="login-link" class="login-btn">Login</a>
+    <a href="#" id="logout-link" style="display:none;">Logout</a>
+
+    <!-- Profile Section -->
+    <div id="profile-link">
+      <img src="assets/default-avatar.png" alt="Profile">
+      <i class="fa fa-caret-down"></i>
     </div>
-
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="explore.html" class="active">Explore</a>
-      <a href="favourites.html">Favourites</a>
-    </nav>
-
-    <div class="profile-container">
-      <!-- When user not logged in -->
-      <a id="login-link" href="login.html" class="btn">Login</a>
-
-      <!-- When logged in -->
-      <div id="user-menu" class="user-menu" style="display: none;">
-        <span id="welcome-msg"></span>
-        <img id="profile-link" src="default-avatar.png" class="profile-icon" alt="Profile">
-        <div id="profile-menu" class="profile-menu">
-          <a href="profile.html">Profile</a>
-          <a href="favourites.html">Favourites</a>
-          <a href="#" id="logout-link">Logout</a>
-        </div>
-      </div>
+    <div id="profile-menu">
+      <a href="favorites.html">❤️ Favourites</a>
+      <a href="profile.html">👤 My Profile</a>
+      <a href="#" id="logout-menu-link">🚪 Logout</a>
     </div>
-  </header>
+  </nav>
+</header>
 
-  <main>
-    <div id="status" style="text-align:center;margin-top:20px;">Loading recipes...</div>
-    <div id="recipe-list"></div>
-  </main>
+<div class="page-strip">Explore Recipes</div>
 
-  <!-- ✅ Supabase + Recipe Script -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search by recipe, ingredient, or tag...">
+  <select id="sortSelect">
+    <option value="a-z">A-Z</option>
+    <option value="popular">Most Popular</option>
+    <option value="quick">Quick to Cook</option>
+  </select>
+</div>
 
-    const recipeList = document.getElementById("recipe-list");
-    let recipes = [];
-    let favorites = [];
+<div class="filter-tags">
+  <button class="active" data-type="all">All</button>
+  <button data-type="spicy">Spicy</button>
+  <button data-type="sweet">Sweet</button>
+  <button data-type="maharashtrian">Maharashtrian</button>
+  <button data-type="festive">Festive</button>
+  <button data-type="snack">Snack</button>
+</div>
 
-    // ✅ Load recipes
-    async function loadRecipes() {
-      const { data, error } = await client.from("recipes").select("*");
-      const status = document.getElementById("status");
-      if (error) {
-        console.error(error);
-        status.textContent = "Failed to load recipes.";
-        return;
-      }
-      status.style.display = "none";
-      recipes = data;
-      await loadFavorites();
-      renderRecipes(recipes);
-    }
+<div id="status" style="text-align:center;">Loading recipes...</div>
+<div id="recipe-list" class="recipe-container"></div>
 
-    // ✅ Load favorites for current user
-    async function loadFavorites() {
-      const user = localStorage.getItem("username");
-      if (!user) return;
-      const { data } = await client.from("favorites").select("recipe_id").eq("user_id", user);
-      favorites = data ? data.map(f => f.recipe_id) : [];
-    }
+<footer>© 2025 Maha Recipe Hub | Crafted with ❤️ for every flavor of Maharashtra</footer>
 
-    // ✅ Render recipe cards
-    function renderRecipes(list) {
-      recipeList.innerHTML = "";
-      if (list.length === 0) {
-        recipeList.innerHTML = "<p style='text-align:center;width:100%'>No recipes found!</p>";
-        return;
-      }
+<script>
+const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      list.forEach((r, i) => {
-        const rank = i + 1;
-        const tags = `<div class="recipe-tags">
-          <span>${r.category || "General"}</span>
-          <span>${r.type || "Food"}</span>
-        </div>`;
+const recipeList = document.getElementById("recipe-list");
+const searchInput = document.getElementById("searchInput");
+const sortSelect = document.getElementById("sortSelect");
+const filterButtons = document.querySelectorAll(".filter-tags button");
+const profileLink = document.getElementById("profile-link");
+const profileMenu = document.getElementById("profile-menu");
+const loginLink = document.getElementById("login-link");
+const logoutLink = document.getElementById("logout-link");
+const logoutMenuLink = document.getElementById("logout-menu-link");
 
-        const isFav = favorites.includes(r.id);
-        const card = document.createElement("div");
-        card.className = "recipe-card";
-        card.innerHTML = `
-          <div class="rank-badge">#${rank}</div>
-          <img src="${r.image_url}">
-          <h3>${r.name}</h3>
-          ${tags}
-          <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
-          <div class="card-actions">
-            <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${r.id}">
-              <i class="fa${isFav ? 's' : 'r'} fa-heart"></i>
-            </button>
-            <button class="like-btn" data-id="${r.id}">
-              <i class="fa fa-thumbs-up"></i> ${r.likes || 0}
-            </button>
-          </div>
-        `;
-        recipeList.appendChild(card);
-      });
+let recipes = [];
+let favorites = [];
 
-      document.querySelectorAll(".fav-btn").forEach(btn => btn.onclick = toggleFavorite);
-      document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
-    }
+async function loadRecipes() {
+  const { data, error } = await client.from("recipes").select("*");
+  const status = document.getElementById("status");
+  if (error) {
+    status.textContent = "Failed to load recipes.";
+    return;
+  }
+  status.style.display = "none";
+  recipes = data;
+  await loadFavorites();
+  renderRecipes(recipes);
+}
 
-    // ✅ Favorite toggle
-    async function toggleFavorite(e) {
-      e.stopPropagation();
-      const recipeId = parseInt(e.currentTarget.dataset.id);
-      const user = localStorage.getItem("username");
-      if (!user) return alert("Please login first!");
+async function loadFavorites() {
+  const user = localStorage.getItem("username");
+  if (!user) return;
+  const { data } = await client.from("favorites").select("recipe_id").eq("user_id", user);
+  favorites = data ? data.map(f => f.recipe_id) : [];
+}
 
-      const isFav = favorites.includes(recipeId);
-      if (isFav) {
-        await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", user);
-        favorites = favorites.filter(f => f !== recipeId);
-      } else {
-        await client.from("favorites").insert([{ recipe_id: recipeId, user_id: user }]);
-        favorites.push(recipeId);
-      }
-      renderRecipes(recipes);
-    }
+function renderRecipes(list) {
+  recipeList.innerHTML = "";
+  if (list.length === 0) {
+    recipeList.innerHTML = "<p style='text-align:center;width:100%'>No recipes found!</p>";
+    return;
+  }
 
-    // ✅ Like system
-    async function addLike(e) {
-      e.stopPropagation();
-      const recipeId = parseInt(e.currentTarget.dataset.id);
-      const recipe = recipes.find(r => r.id === recipeId);
-      recipe.likes = (recipe.likes || 0) + 1;
-      await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
-      renderRecipes(recipes);
-    }
+  list.forEach((r, i) => {
+    const rank = i + 1;
+    const tags = `
+      <div class="recipe-tags">
+        <span class="recipe-tag">${r.category || "General"}</span>
+        <span class="recipe-tag">${r.type || "Food"}</span>
+      </div>`;
+    const isFav = favorites.includes(r.id);
+    const card = document.createElement("div");
+    card.className = "recipe-card";
+    card.innerHTML = `
+      <div class="rank-badge">#${rank}</div>
+      <img src="${r.image_url}">
+      <h3>${r.name}</h3>
+      ${tags}
+      <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
+      <div class="card-actions">
+        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${r.id}"><i class="fa${isFav ? 's' : 'r'} fa-heart"></i></button>
+        <button class="like-btn" data-id="${r.id}"><i class="fa fa-thumbs-up"></i> ${r.likes || 0}</button>
+      </div>`;
+    recipeList.appendChild(card);
+  });
 
-    loadRecipes();
-  </script>
+  document.querySelectorAll(".fav-btn").forEach(btn => btn.onclick = toggleFavorite);
+  document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
+}
 
-  <!-- ✅ Profile Dropdown & Login Handling -->
-  <script>
-    const loginLink = document.getElementById("login-link");
-    const userMenu = document.getElementById("user-menu");
-    const profileLink = document.getElementById("profile-link");
-    const profileMenu = document.getElementById("profile-menu");
-    const welcomeMsg = document.getElementById("welcome-msg");
-    const logoutLink = document.getElementById("logout-link");
+async function toggleFavorite(e) {
+  e.stopPropagation();
+  const recipeId = parseInt(e.currentTarget.dataset.id);
+  const user = localStorage.getItem("username");
+  if (!user) return alert("Please login first!");
+  const isFav = favorites.includes(recipeId);
+  if (isFav) {
+    await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", user);
+    favorites = favorites.filter(f => f !== recipeId);
+  } else {
+    await client.from("favorites").insert([{ recipe_id: recipeId, user_id: user }]);
+    favorites.push(recipeId);
+  }
+  renderRecipes(recipes);
+}
 
-    function checkLogin() {
-      const user = localStorage.getItem("username");
-      if (user) {
-        loginLink.style.display = "none";
-        userMenu.style.display = "flex";
-        welcomeMsg.textContent = "Hi, " + user;
-      } else {
-        loginLink.style.display = "inline-block";
-        userMenu.style.display = "none";
-      }
-    }
+async function addLike(e) {
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  btn.classList.add("animate");
+  setTimeout(() => btn.classList.remove("animate"), 300);
+  const recipeId = parseInt(btn.dataset.id);
+  const recipe = recipes.find(r => r.id === recipeId);
+  recipe.likes = (recipe.likes || 0) + 1;
+  await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
+  renderRecipes(recipes);
+}
 
-    profileLink?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      profileMenu.style.display =
-        profileMenu.style.display === "block" ? "none" : "block";
-    });
+sortSelect.addEventListener("change", () => {
+  if (sortSelect.value === "quick") recipes.sort((a,b)=>a.time-b.time);
+  else if (sortSelect.value === "popular") recipes.sort((a,b)=>(b.likes||0)-(a.likes||0));
+  else recipes.sort((a,b)=>a.name.localeCompare(b.name));
+  renderRecipes(recipes);
+});
 
-    document.addEventListener("click", (e) => {
-      if (!profileMenu.contains(e.target) && !profileLink.contains(e.target)) {
-        profileMenu.style.display = "none";
-      }
-    });
+// Profile menu toggle
+profileLink.addEventListener("click", () => {
+  profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
+});
 
-    logoutLink.addEventListener("click", () => {
-      localStorage.removeItem("username");
-      location.reload();
-    });
+document.addEventListener("click", (e) => {
+  if (!profileLink.contains(e.target)) profileMenu.style.display = "none";
+});
 
-    checkLogin();
-  </script>
+// Login check
+function checkLogin() {
+  const user = localStorage.getItem("username");
+  if (user) {
+    loginLink.style.display = "none";
+    logoutLink.style.display = "none";
+    profileLink.style.display = "flex";
+  } else {
+    profileLink.style.display = "none";
+    loginLink.style.display = "inline-block";
+  }
+}
+
+logoutMenuLink.addEventListener("click", () => {
+  localStorage.removeItem("username");
+  location.reload();
+});
+
+checkLogin();
+loadRecipes();
+</script>
+
 </body>
 </html>
+

@@ -282,7 +282,7 @@
 
     <!-- Profile Section -->
     <div id="profile-link">
-      <img src="assets/default-avatar.png" alt="Profile">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile" width="32" height="32" style="border-radius:50%;">
       <i class="fa fa-caret-down"></i>
     </div>
     <div id="profile-menu">
@@ -345,7 +345,7 @@ async function loadRecipes() {
   }
   status.style.display = "none";
   recipes = data;
-  await loadFavoritesFromDB();
+  await loadFavorites();
 renderRecipes(recipes);
 }
 
@@ -507,6 +507,7 @@ loadRecipes();
 
 </body>
 </html>
+
 
 
 

@@ -9,62 +9,247 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-body { font-family:'Inter',sans-serif; margin:0; background:#fffaf5; color:#333; display:flex; flex-direction:column; min-height:100vh; }
-header { display:flex; justify-content:space-between; align-items:center; padding:10px 30px; background:#fff; border-bottom:1px solid #eee; position:sticky; top:0; z-index:100; }
+/* 🌟 Base Layout */
+body { 
+  font-family:'Inter',sans-serif; 
+  margin:0; 
+  background:#fffaf5; 
+  color:#333; 
+  display:flex; 
+  flex-direction:column; 
+  min-height:100vh; 
+}
+
+/* 🌟 Header & Navigation */
+header { 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  padding:10px 30px; 
+  background:#fff; 
+  border-bottom:1px solid #eee; 
+  position:sticky; 
+  top:0; 
+  z-index:100; 
+}
 header img { height:50px; cursor:pointer; transition:0.3s; }
 header img:hover { transform:scale(1.05); }
-nav a { text-decoration:none; margin-left:15px; color:#333; font-weight:600; padding:6px 14px; border-radius:6px; transition:.3s; }
+
+nav a { 
+  text-decoration:none; 
+  margin-left:15px; 
+  color:#333; 
+  font-weight:600; 
+  padding:6px 14px; 
+  border-radius:6px; 
+  transition:.3s; 
+}
 nav a:hover { background:#ff7f50; color:#fff; }
 nav .login-btn { background:#ff7f50; color:white; }
 nav #logout-link { background:#ff4c4c; color:white; }
-nav #profile-link { background:#ff7f50; color:white; border-radius:50px; padding:6px 12px; display:flex; align-items:center; gap:5px; cursor:pointer; }
-nav #profile-menu { display:none; position:absolute; top:70px; right:30px; background:white; border:1px solid #ddd; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:180px; }
-nav #profile-menu a { display:block; padding:10px 15px; text-decoration:none; color:#333; }
+
+/* 🌟 Profile Button & Menu */
+nav #profile-link { 
+  background:#ff7f50; 
+  color:white; 
+  border-radius:50px; 
+  padding:6px 12px; 
+  display:flex; 
+  align-items:center; 
+  gap:5px; 
+  cursor:pointer; 
+}
+nav #profile-link img {
+  width:28px; height:28px; border-radius:50%; object-fit:cover;
+}
+nav #profile-menu { 
+  display:none; 
+  position:absolute; 
+  top:70px; 
+  right:30px; 
+  background:white; 
+  border:1px solid #ddd; 
+  border-radius:10px; 
+  box-shadow:0 4px 12px rgba(0,0,0,0.1); 
+  width:180px; 
+}
+nav #profile-menu a { 
+  display:block; 
+  padding:10px 15px; 
+  text-decoration:none; 
+  color:#333; 
+  transition:0.3s;
+}
 nav #profile-menu a:hover { background:#ff7f50; color:white; }
 
-.page-strip { background:linear-gradient(90deg,#ff7f50,#ffb07f); color:white; text-align:center; font-size:2rem; font-weight:700; padding:20px 0; }
+/* 🌟 Section Title */
+.page-strip { 
+  background:linear-gradient(90deg,#ff7f50,#ffb07f); 
+  color:white; 
+  text-align:center; 
+  font-size:2rem; 
+  font-weight:700; 
+  padding:20px 0; 
+}
 
-.search-container { display:flex; justify-content:center; margin:20px 0; gap:10px; flex-wrap:wrap; }
-.search-container input { padding:10px 15px; width:250px; border-radius:8px; border:1px solid #ddd; }
-.search-container select { padding:10px 12px; border-radius:8px; border:1px solid #ddd; }
+/* 🌟 Search & Filter UI */
+.search-container { 
+  display:flex; 
+  justify-content:center; 
+  margin:20px 0; 
+  gap:10px; 
+  flex-wrap:wrap; 
+}
+.search-container input { 
+  padding:10px 15px; 
+  width:250px; 
+  border-radius:8px; 
+  border:1px solid #ddd; 
+}
+.search-container select { 
+  padding:10px 12px; 
+  border-radius:8px; 
+  border:1px solid #ddd; 
+}
 
-.filter-tags { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
-.filter-tags button { padding:6px 12px; border:none; border-radius:8px; cursor:pointer; background:#ffb07f; color:white; transition:.3s; }
-.filter-tags button.active, .filter-tags button:hover { background:#ff7f50; }
+.filter-tags { 
+  display:flex; 
+  justify-content:center; 
+  gap:10px; 
+  flex-wrap:wrap; 
+  margin-bottom:20px; 
+}
+.filter-tags button { 
+  padding:6px 12px; 
+  border:none; 
+  border-radius:8px; 
+  cursor:pointer; 
+  background:#ffb07f; 
+  color:white; 
+  transition:.3s; 
+}
+.filter-tags button.active, 
+.filter-tags button:hover { background:#ff7f50; }
 
-.recipe-container { display:flex; flex-wrap:wrap; justify-content:center; gap:25px; margin:auto; max-width:1200px; padding-bottom:50px; }
-.recipe-card { background:white; border-radius:15px; overflow:hidden; width:250px; cursor:pointer; box-shadow:0 3px 8px rgba(0,0,0,0.1); transition:.3s; text-align:center; position:relative; }
+/* 🌟 Recipe Cards */
+.recipe-container { 
+  display:flex; 
+  flex-wrap:wrap; 
+  justify-content:center; 
+  gap:25px; 
+  margin:auto; 
+  max-width:1200px; 
+  padding-bottom:50px; 
+}
+
+.recipe-card { 
+  background:white; 
+  border-radius:15px; 
+  overflow:hidden; 
+  width:250px; 
+  cursor:pointer; 
+  box-shadow:0 3px 8px rgba(0,0,0,0.1); 
+  transition:.3s; 
+  text-align:center; 
+  position:relative; 
+}
 .recipe-card:hover { transform:translateY(-8px) scale(1.02); }
 .recipe-card img { width:100%; height:160px; object-fit:cover; }
 .recipe-card h3 { color:#ff7f50; margin:12px 0 6px; }
 .recipe-card p { padding:0 12px 12px; color:#555; }
-.recipe-tags { margin-bottom:8px; }
-.recipe-tag { background:#ffe5d6; color:#d35400; padding:2px 6px; border-radius:5px; font-size:0.8rem; margin:2px; display:inline-block; }
-.badge { position:absolute; top:10px; left:10px; background:gold; color:white; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:0.8rem; }
 
-.like-btn { transition: transform 0.2s; }
-.like-btn.animate { transform: scale(1.4); }
+/* 🌟 Rank Badge */
+.rank-badge {
+  position:absolute;
+  top:10px;
+  left:10px;
+  background:#ff7f50;
+  color:white;
+  padding:4px 8px;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:0.8rem;
+}
 
-footer { background:#333; color:white; padding:25px; text-align:center; margin-top:auto; }
+/* 🌟 Tags inside cards */
+.recipe-tags {
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-bottom:8px;
+  flex-wrap:wrap;
+}
+.recipe-tags span {
+  background:#ffe3d2;
+  padding:3px 8px;
+  border-radius:12px;
+  font-size:0.8rem;
+  color:#ff7f50;
+  font-weight:600;
+}
 
+/* 🌟 Like / Favorite Buttons */
+.card-actions {
+  display:flex;
+  justify-content:space-between;
+  padding:8px 12px;
+  align-items:center;
+}
+.fav-btn, .like-btn {
+  border:none;
+  background:none;
+  cursor:pointer;
+  font-size:1.1rem;
+  transition:0.3s;
+}
+.fav-btn.active i { 
+  color:#ff4c4c; 
+  transform:scale(1.2); 
+  transition:transform 0.2s ease; 
+}
+.like-btn i { color:#777; margin-right:5px; }
+.like-btn:hover i, 
+.fav-btn:hover i { transform:scale(1.3); }
+
+.like-btn.animate { transform:scale(1.4); }
+
+/* 🌟 Footer */
+footer { 
+  background:#333; 
+  color:white; 
+  padding:25px; 
+  text-align:center; 
+  margin-top:auto; 
+}
 </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" onclick="window.location.href='index.html'">
+  <!-- 🌟 Logo -->
+  <img src="assets/logo.png" alt="Maha Recipe Hub" onclick="window.location.href='index.html'">
+
+  <!-- 🌟 Navigation -->
   <nav>
     <a href="index.html">Home</a>
-    <a href="explore.html" style="background:#ff7f50;color:white;">Explore</a>
+    <a href="explore.html">Explore</a>
     <a href="recipe-generator.html">Find My Recipe</a>
     <a href="about.html">About</a>
+    <a href="login.html" class="login-btn" id="login-link">Login</a>
+    <a href="#" id="logout-link" style="display:none;">Logout</a>
 
-    <!-- Login/Profile -->
-    <a href="login.html" id="login-link" class="login-btn">Login</a>
-    <div id="profile-link" style="display:none;"><i class="fas fa-user"></i> <span id="profile-username"></span></div>
+    <!-- 🌟 Profile Icon -->
+    <div id="profile-link" style="display:none;">
+      <img id="profile-avatar" src="assets/default-avatar.png" alt="User Avatar">
+      <span id="profile-name">You</span>
+    </div>
+
+    <!-- 🌟 Profile Dropdown Menu -->
     <div id="profile-menu">
-      <a href="favorites.html">Favorites</a>
-      <a href="#" id="logout-link">Logout</a>
+      <a href="profile.html">👤 Profile</a>
+      <a href="my-recipes.html">📖 My Recipes</a>
+      <a href="favorites.html">❤️ Favorites</a>
+      <a href="#" id="logout-menu-link">🚪 Logout</a>
     </div>
   </nav>
 </header>
@@ -97,156 +282,159 @@ footer { background:#333; color:white; padding:25px; text-align:center; margin-t
 <footer>&copy; 2025 Maha Recipe Hub</footer>
 
 <script>
-// Supabase setup
 const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Login State
-const loginLink = document.getElementById("login-link");
-const profileLink = document.getElementById("profile-link");
-const profileMenu = document.getElementById("profile-menu");
-const profileUsername = document.getElementById("profile-username");
-const logoutLink = document.getElementById("logout-link");
-
-function checkLogin(){
-  const user = localStorage.getItem("username");
-  if(user){
-    loginLink.style.display = "none";
-    profileLink.style.display = "flex";
-    profileUsername.textContent = user;
-  } else {
-    loginLink.style.display = "inline";
-    profileLink.style.display = "none";
-  }
-}
-
-profileLink.addEventListener("click", ()=>{
-  profileMenu.style.display = profileMenu.style.display==="block"?"none":"block";
-});
-
-logoutLink.addEventListener("click", ()=>{
-  localStorage.removeItem("username");
-  checkLogin();
-  profileMenu.style.display="none";
-});
-
-checkLogin();
-
-// Load recipes
 const recipeList = document.getElementById("recipe-list");
 const searchInput = document.getElementById("searchInput");
 const filterButtons = document.querySelectorAll(".filter-tags button");
 const sortSelect = document.getElementById("sortSelect");
 let recipes = [];
+let favorites = [];
 let currentFilter = "all";
 
-async function loadRecipes(){
+// ✅ Load recipes
+async function loadRecipes() {
   const { data, error } = await client.from("recipes").select("*");
   const status = document.getElementById("status");
-  if(error){
+  if (error) {
+    console.error(error);
     status.textContent = "Failed to load recipes.";
     return;
   }
-  status.style.display="none";
+  status.style.display = "none";
   recipes = data;
-  renderRecipes(data);
+  await loadFavorites();
+  renderRecipes(recipes);
 }
 
-function renderRecipes(list){
-  recipeList.innerHTML="";
-  if(list.length===0){
-    recipeList.innerHTML="<p style='text-align:center;width:100%'>No recipes found!</p>";
+// ✅ Load favorites for current user
+async function loadFavorites() {
+  const user = localStorage.getItem("username");
+  if (!user) return;
+  const { data } = await client.from("favorites").select("recipe_id").eq("user_id", user);
+  favorites = data ? data.map(f => f.recipe_id) : [];
+}
+
+// ✅ Render recipe cards
+function renderRecipes(list) {
+  recipeList.innerHTML = "";
+  if (list.length === 0) {
+    recipeList.innerHTML = "<p style='text-align:center;width:100%'>No recipes found!</p>";
     return;
   }
 
-  const currentUser = localStorage.getItem("username");
+  // Rank recipes for current filter
+  list.forEach((r, i) => {
+    const rank = i + 1;
+    const tags = `<div class="recipe-tags">
+      <span>${r.category || "General"}</span>
+      <span>${r.type || "Food"}</span>
+    </div>`;
 
-  list.forEach(r=>{
-    const tags = r.type ? r.type.split(",").map(t=>`<span class='recipe-tag'>${t.trim()}</span>`).join("") : "";
+    const isFav = favorites.includes(r.id);
     const card = document.createElement("div");
-    card.className="recipe-card";
-
-    const festiveBadge = r.type && r.type.toLowerCase().includes("festive") ? `<span class='badge'>🌟 Festive</span>` : "";
-    const isLiked = r.liked_by && currentUser && r.liked_by.includes(currentUser);
-    const heartColor = isLiked ? "red" : "gray";
-
+    card.className = "recipe-card";
     card.innerHTML = `
-      ${festiveBadge}
+      <div class="rank-badge">#${rank}</div>
       <img src="${r.image_url}">
       <h3>${r.name}</h3>
-      <div class="recipe-tags">${tags}</div>
-      <p>${r.description ? r.description.slice(0,80)+"..." : ""}</p>
-      <div style="margin-bottom:10px;">
-        <i class="fas fa-heart like-btn" style="color:${heartColor}; cursor:pointer; margin-right:5px;"></i>
-        <span class="likes-count">${r.likes || 0}</span>
+      ${tags}
+      <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
+      <div class="card-actions">
+        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${r.id}"><i class="fa${isFav ? 's' : 'r'} fa-heart"></i></button>
+        <button class="like-btn" data-id="${r.id}"><i class="fa fa-thumbs-up"></i> ${r.likes || 0}</button>
       </div>
     `;
-
-    // Like button animation & functionality
-    const heart = card.querySelector(".like-btn");
-    heart.addEventListener("click", async (e)=>{
-      e.stopPropagation();
-      if(!currentUser){ alert("Login to like recipes!"); return; }
-      heart.classList.add("animate");
-      setTimeout(()=>heart.classList.remove("animate"), 300);
-
-      let newLikes = r.likes || 0;
-      let newLikedBy = r.liked_by || [];
-
-      if(isLiked){
-        newLikes -= 1;
-        newLikedBy = newLikedBy.filter(u=>u!==currentUser);
-      } else {
-        newLikes += 1;
-        newLikedBy.push(currentUser);
-      }
-
-      const { error } = await client.from("recipes").update({likes:newLikes, liked_by:newLikedBy}).eq("id", r.id);
-      if(error){ alert("Failed to update likes."); return; }
-
-      card.querySelector(".likes-count").textContent = newLikes;
-      heart.style.color = isLiked?"gray":"red";
-      r.likes = newLikes;
-      r.liked_by = newLikedBy;
-    });
-
-    card.onclick = ()=> window.location.href=`recipe-detail.html?id=${r.id}`;
     recipeList.appendChild(card);
   });
+
+  // Add button listeners
+  document.querySelectorAll(".fav-btn").forEach(btn => btn.onclick = toggleFavorite);
+  document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
 }
 
-// Filters & Search
-searchInput.addEventListener("input", filterRecipes);
-filterButtons.forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    filterButtons.forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.type;
-    filterRecipes();
-  });
+// ✅ Favorite toggle
+async function toggleFavorite(e) {
+  e.stopPropagation();
+  const recipeId = parseInt(e.currentTarget.dataset.id);
+  const user = localStorage.getItem("username");
+  if (!user) return alert("Please login first!");
+
+  const isFav = favorites.includes(recipeId);
+  if (isFav) {
+    await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", user);
+    favorites = favorites.filter(f => f !== recipeId);
+  } else {
+    await client.from("favorites").insert([{ recipe_id: recipeId, user_id: user }]);
+    favorites.push(recipeId);
+  }
+  renderRecipes(recipes);
+}
+
+// ✅ Like system
+async function addLike(e) {
+  e.stopPropagation();
+  const recipeId = parseInt(e.currentTarget.dataset.id);
+  const recipe = recipes.find(r => r.id === recipeId);
+  recipe.likes = (recipe.likes || 0) + 1;
+  await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
+  renderRecipes(recipes);
+}
+
+// ✅ Quick to Cook sorting
+sortSelect.addEventListener("change", () => {
+  if (sortSelect.value === "quick") {
+    recipes.sort((a,b) => a.time - b.time);
+  } else if (sortSelect.value === "popular") {
+    recipes.sort((a,b) => (b.likes||0) - (a.likes||0));
+  }
+  renderRecipes(recipes);
 });
-sortSelect.addEventListener("change", filterRecipes);
 
-function filterRecipes(){
-  const searchTerm = searchInput.value.toLowerCase();
-  let filtered = recipes.filter(r=>{
-    const matchesSearch = r.name.toLowerCase().includes(searchTerm) ||
-                          (r.ingredients && r.ingredients.toLowerCase().includes(searchTerm));
-    const matchesType = currentFilter==="all" || (r.type && r.type.toLowerCase().includes(currentFilter));
-    return matchesSearch && matchesType;
-  });
+// ✅ Login system
+const loginLink = document.getElementById("login-link");
+const logoutLink = document.getElementById("logout-link");
+const welcomeMsg = document.getElementById("welcome-msg");
 
-  const sortValue = sortSelect.value;
-  if(sortValue==="a-z") filtered.sort((a,b)=>a.name.localeCompare(b.name));
-  if(sortValue==="time") filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(sortValue==="popular") filtered.sort((a,b)=>(b.likes||0)-(a.likes||0));
-
-  renderRecipes(filtered);
+function checkLogin() {
+  const user = localStorage.getItem("username");
+  if (user) {
+    loginLink.style.display = "none";
+    welcomeMsg.style.display = "inline";
+    welcomeMsg.textContent = "Welcome, " + user;
+    logoutLink.style.display = "inline";
+  }
 }
+logoutLink.onclick = () => { localStorage.removeItem("username"); location.reload(); };
+checkLogin();
 
 loadRecipes();
 </script>
+<script>
+  // 🌟 Profile dropdown toggle
+  const profileLink = document.getElementById("profile-link");
+  const profileMenu = document.getElementById("profile-menu");
 
+  profileLink?.addEventListener("click", () => {
+    profileMenu.style.display = 
+      profileMenu.style.display === "block" ? "none" : "block";
+  });
+
+  // 🌟 Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!profileLink.contains(e.target) && !profileMenu.contains(e.target)) {
+      profileMenu.style.display = "none";
+    }
+  });
+
+  // 🌟 Logout link connection
+  document.getElementById("logout-menu-link")?.addEventListener("click", () => {
+    // your logout logic here (example)
+    console.log("User logged out");
+  });
+</script>
 </body>
 </html>
+

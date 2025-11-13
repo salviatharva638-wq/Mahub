@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Favorites - Maha Recipe Hub</title>
+<title>Favourites - Maha Recipe Hub</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -55,13 +55,13 @@ footer { background:#333;color:white;padding:25px;text-align:center;margin-top:a
     <a href="login.html" id="login-link" class="login-btn">Login</a>
     <div id="profile-link" style="display:none;"><i class="fas fa-user"></i> <span id="profile-username"></span></div>
     <div id="profile-menu">
-      <a href="favorites.html" style="background:#ff7f50;color:white;">Favorites</a>
+      <a href="favourites.html" style="background:#ff7f50;color:white;">Favourites</a>
       <a href="#" id="logout-link">Logout</a>
     </div>
   </nav>
 </header>
 
-<div class="page-strip">My Favorites ❤️</div>
+<div class="page-strip">My Favourites ❤️</div>
 
 <div class="search-container">
   <input type="text" id="searchInput" placeholder="Search in favorites">
@@ -93,14 +93,14 @@ const user = localStorage.getItem("username");
 if (!user) {
   status.textContent = "Please login to view your favourites!";
 } else {
-  loadFavorites();
+  loadFavourites();
 }
 
-async function loadFavorites() {
+async function loadFavourites() {
   try {
     // 1️⃣ Get favourites for logged-in user
     const { data: favs, error: favError } = await client
-      .from("favorites")
+      .from("favourites")
       .select("recipe_id")
       .eq("user_id", user);
 
@@ -122,14 +122,14 @@ async function loadFavorites() {
     if (recipeError) throw recipeError;
 
     status.style.display = "none";
-    renderFavorites(recipes);
+    renderFavourites(recipes);
   } catch (err) {
     console.error("Error fetching favourites:", err);
     status.textContent = "Failed to load favourites. Please try again later.";
   }
 }
 
-function renderFavorites(list) {
+function renderFavourites(list) {
   recipeList.innerHTML = "";
   list.forEach(r => {
     const card = document.createElement("div");

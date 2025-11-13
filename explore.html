@@ -345,8 +345,8 @@ async function loadRecipes() {
   }
   status.style.display = "none";
   recipes = data;
-  await loadFavorites();
-  renderRecipes(recipes);
+  await loadFavoritesFromDB();
+renderRecipes(recipes);
 }
 
 async function loadFavorites() {
@@ -396,6 +396,20 @@ async function toggleFavorite(e) {
   const recipeId = parseInt(btn.dataset.id);
   const user = localStorage.getItem("username");
 
+  let favorites = [];
+
+async function loadFavoritesFromDB() {
+  if (!user) return;
+  const { data, error } = await client
+    .from("favorites")
+    .select("recipe_id")
+    .eq("user_id", user);
+  if (!error && data) {
+    favorites = data.map(f => f.recipe_id);
+  }
+}
+
+
   if (!user) {
     alert("Please login first!");
     return;
@@ -420,16 +434,38 @@ async function addLike(e) {
   const btn = e.currentTarget;
   const recipeId = parseInt(btn.dataset.id);
 
-  // small pop animation
+  // small animation
   btn.style.transform = "scale(1.3)";
   setTimeout(() => btn.style.transform = "scale(1)", 200);
 
-  const recipe = recipes.find(r => r.id === recipeId);
-  recipe.likes = (recipe.likes || 0) + 1;
-  btn.innerHTML = `<i class="fa fa-thumbs-up"></i> ${recipe.likes}`;
+  // fetch latest recipe data from Supabase
+  const { data: recipeData, error } = await client
+    .from("recipes")
+    .select("likes")
+    .eq("id", recipeId)
+    .single();
 
-  await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
+  if (error) {
+    console.error("Error fetching likes:", error);
+    return;
+  }
+
+  const newLikes = (recipeData.likes || 0) + 1;
+
+  const { error: updateError } = await client
+    .from("recipes")
+    .update({ likes: newLikes })
+    .eq("id", recipeId);
+
+  if (updateError) {
+    console.error("Error updating likes:", updateError);
+    return;
+  }
+
+  // reflect immediately on button
+  btn.innerHTML = `<i class="fa fa-thumbs-up"></i> ${newLikes}`;
 }
+
   
 sortSelect.addEventListener("change", () => {
   if (sortSelect.value === "quick") recipes.sort((a,b)=>a.time-b.time);
@@ -471,6 +507,7 @@ loadRecipes();
 
 </body>
 </html>
+
 
 
 

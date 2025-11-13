@@ -86,7 +86,9 @@ const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const recipeList = document.getElementById("fav-list");
 const status = document.getElementById("status");
-const user = localStorage.getItem("username");
+
+// ✅ get the username or user_id stored during login
+const user = localStorage.getItem("username"); 
 
 if (!user) {
   status.textContent = "Please login to view your favourites!";
@@ -95,49 +97,45 @@ if (!user) {
 }
 
 async function loadFavorites() {
-  // 1️⃣ Get favourite recipe IDs for this user
-  const { data: favs, error: favError } = await client
-    .from("favorites")
-    .select("recipe_id")
-    .eq("user_id", user);
+  try {
+    // 1️⃣ Get favourites for logged-in user
+    const { data: favs, error: favError } = await client
+      .from("favorites")
+      .select("recipe_id")
+      .eq("user_id", user);
 
-  if (favError) {
-    console.error("Error fetching favourites:", favError);
-    status.textContent = "Failed to load favourites.";
-    return;
+    if (favError) throw favError;
+
+    if (!favs || favs.length === 0) {
+      status.textContent = "No favourites yet!";
+      return;
+    }
+
+    const recipeIds = favs.map(f => f.recipe_id);
+
+    // 2️⃣ Fetch recipes for those IDs
+    const { data: recipes, error: recipeError } = await client
+      .from("recipes")
+      .select("*")
+      .in("id", recipeIds);
+
+    if (recipeError) throw recipeError;
+
+    status.style.display = "none";
+    renderFavorites(recipes);
+  } catch (err) {
+    console.error("Error fetching favourites:", err);
+    status.textContent = "Failed to load favourites. Please try again later.";
   }
-
-  if (!favs || favs.length === 0) {
-    status.textContent = "No favourites yet!";
-    return;
-  }
-
-  const recipeIds = favs.map(f => f.recipe_id);
-
-  // 2️⃣ Fetch the actual recipes
-  const { data: recipes, error: recipeError } = await client
-    .from("recipes")
-    .select("*")
-    .in("id", recipeIds);
-
-  if (recipeError) {
-    console.error("Error fetching recipes:", recipeError);
-    status.textContent = "Failed to load recipes.";
-    return;
-  }
-
-  status.style.display = "none";
-  renderFavorites(recipes);
 }
 
-// 3️⃣ Render favourite recipes
 function renderFavorites(list) {
   recipeList.innerHTML = "";
   list.forEach(r => {
     const card = document.createElement("div");
     card.className = "recipe-card";
     card.innerHTML = `
-      <img src="${r.image_url}" alt="${r.name}">
+      <img src="${r.image_url || 'default-avatar.png'}" alt="${r.name}">
       <h3>${r.name}</h3>
       <div class="recipe-tags">
         <span>${r.category || "General"}</span>

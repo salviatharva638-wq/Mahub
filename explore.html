@@ -390,24 +390,37 @@ function renderRecipes(list) {
   document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
 }
 
+// ✅ Favorite toggle (with Supabase insert/delete)
 async function toggleFavorite(e) {
   e.stopPropagation();
-  const btn = e.currentTarget;
-  const recipeId = parseInt(btn.dataset.id);
+  const recipeId = e.currentTarget.dataset.id;
   const user = localStorage.getItem("username");
-
-  let favorites = [];
-
-async function loadFavoritesFromDB() {
-  if (!user) return;
-  const { data, error } = await client
-    .from("favorites")
-    .select("recipe_id")
-    .eq("user_id", user);
-  if (!error && data) {
-    favorites = data.map(f => f.recipe_id);
+  if (!user) {
+    alert("Please login first!");
+    return;
   }
+
+  const isFav = favorites.includes(recipeId);
+
+  if (isFav) {
+    // remove from favorites
+    const { error } = await client
+      .from("favorites")
+      .delete()
+      .eq("recipe_id", recipeId)
+      .eq("user_id", user);
+    if (!error) favorites = favorites.filter(f => f !== recipeId);
+  } else {
+    // add to favorites
+    const { error } = await client
+      .from("favorites")
+      .insert([{ recipe_id: recipeId, user_id: user }]);
+    if (!error) favorites.push(recipeId);
+  }
+
+  renderRecipes(recipes); // re-render cards with updated heart color
 }
+
 
 
   if (!user) {
@@ -507,6 +520,7 @@ loadRecipes();
 
 </body>
 </html>
+
 
 
 

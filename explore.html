@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maha Recipe Hub | Explore</title>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <title>Explore Recipes | Maha Recipe Hub</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
 
   <style>
     body {
@@ -19,13 +17,14 @@
       min-height: 100vh;
     }
 
-    /* 🔸 HEADER */
+    /* 🟠 Gradient Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 10px 30px;
-      background: #fff;
+      background: linear-gradient(90deg, #ff7f50, #ffb07f);
+      color: white;
       border-bottom: 1px solid #eee;
       position: sticky;
       top: 0;
@@ -37,7 +36,6 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
     header img:hover {
       transform: scale(1.05);
     }
@@ -45,62 +43,20 @@
     nav a {
       text-decoration: none;
       margin-left: 15px;
-      color: #333;
+      color: white;
       font-weight: 600;
       padding: 6px 14px;
       border-radius: 6px;
-      transition: .3s;
+      transition: 0.3s;
     }
 
     nav a:hover {
-      background: #ff7f50;
-      color: #fff;
+      background: rgba(255, 255, 255, 0.25);
     }
 
     nav .login-btn {
-      background: #ff7f50;
-      color: white;
-    }
-
-    nav #logout-link {
-      background: #ff4c4c;
-      color: white;
-    }
-
-    nav #profile-link {
-      background: #ff7f50;
-      color: white;
-      border-radius: 50px;
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    nav #profile-menu {
-      display: none;
-      position: absolute;
-      top: 60px;
-      right: 0;
       background: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 180px;
-    }
-
-    nav #profile-menu a {
-      display: block;
-      padding: 10px 15px;
-      text-decoration: none;
-      color: #333;
-    }
-
-    nav #profile-menu a:hover {
-      background: #ff7f50;
-      color: white;
+      color: #ff7f50;
     }
 
     .page-strip {
@@ -120,8 +76,15 @@
       flex-wrap: wrap;
     }
 
-    .search-container input, .search-container select {
+    .search-container input {
       padding: 10px 15px;
+      width: 250px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .search-container select {
+      padding: 10px 12px;
       border-radius: 8px;
       border: 1px solid #ddd;
     }
@@ -141,7 +104,7 @@
       cursor: pointer;
       background: #ffb07f;
       color: white;
-      transition: .3s;
+      transition: 0.3s;
     }
 
     .filter-tags button.active,
@@ -149,7 +112,6 @@
       background: #ff7f50;
     }
 
-    /* 🔸 Recipe Cards */
     .recipe-container {
       display: flex;
       flex-wrap: wrap;
@@ -167,7 +129,7 @@
       width: 250px;
       cursor: pointer;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-      transition: .3s;
+      transition: 0.3s;
       text-align: center;
       position: relative;
     }
@@ -206,7 +168,7 @@
       display: inline-block;
     }
 
-    .rank-badge {
+    .badge {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -218,29 +180,12 @@
       font-size: 0.8rem;
     }
 
-    .card-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 15px;
-      border-top: 1px solid #eee;
-    }
-
-    .card-actions button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      color: #ff7f50;
+    .like-btn {
       transition: transform 0.2s;
     }
 
-    .card-actions button:hover {
-      transform: scale(1.2);
-    }
-
-    .fav-btn.active i {
-      color: red;
+    .like-btn.animate {
+      transform: scale(1.4);
     }
 
     footer {
@@ -250,194 +195,206 @@
       text-align: center;
       margin-top: auto;
     }
+
+    /* 🧡 Profile Button */
+    .profile-container {
+      position: relative;
+      display: inline-block;
+      margin-left: 15px;
+    }
+
+    .profile-icon {
+      width: 45px;
+      height: 45px;
+      background: white;
+      color: #ff7f50;
+      font-weight: bold;
+      font-size: 1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-card {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background: #fff;
+      color: #333;
+      width: 220px;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      text-align: center;
+    }
+
+    .profile-photo-container {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 10px auto;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .profile-photo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #change-photo-btn,
+    #logout-btn {
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      background: #ff7f50;
+      color: white;
+      cursor: pointer;
+    }
+
+    #change-photo-btn:hover,
+    #logout-btn:hover {
+      background: darkorange;
+    }
   </style>
 </head>
 
 <body>
+  <!-- 🟠 Header -->
+  <header>
+    <img src="assets/logo.png" alt="Maha Recipe Hub Logo" onclick="window.location.href='index.html'">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="explore.html" class="active">Explore</a>
+      <a href="about.html">About</a>
+      <a href="login.html" id="login-link" class="login-btn">Login</a>
 
-<header>
-  <img src="assets/logo.png" alt="Maha Recipe Hub Logo" onclick="window.location.href='index.html'">
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="explore.html" class="active">Explore</a>
-    <a href="recipe-generator.html">Find My Recipe</a>
-    <a href="about.html">About</a>
-    <a href="login.html" id="login-link" class="login-btn">Login</a>
-    <span id="welcome-msg" style="display:none;"></span>
-    <a href="#" id="logout-link" style="display:none;">Logout</a>
+      <!-- Profile -->
+      <div class="profile-container" id="profile-container" style="display:none;">
+        <div class="profile-icon" id="profile-icon">A</div>
+        <div class="profile-card" id="profile-card">
+          <div class="profile-photo-container">
+            <img id="profile-photo" src="assets/default-avatar.png" alt="Profile Photo">
+            <input type="file" id="upload-photo" accept="image/*" style="display:none;">
+          </div>
+          <p><strong>Username:</strong> <span id="profile-username"></span></p>
+          <p><strong>Email:</strong> <span id="profile-email"></span></p>
+          <button id="change-photo-btn">Change Photo</button>
+          <button id="logout-btn">Logout</button>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-    <div id="profile-link">
-      <img src="assets/default-avatar.png" alt="Profile" width="32" height="32" style="border-radius:50%;">
-      <i class="fa fa-caret-down"></i>
-    </div>
+  <!-- 🧡 Explore Content -->
+  <div class="page-strip">Explore Recipes</div>
 
-    <div id="profile-menu">
-      <a href="favorites.html">❤️ Favourites</a>
-      <a href="profile.html">👤 My Profile</a>
-      <a href="#" id="logout-menu-link">🚪 Logout</a>
-    </div>
-  </nav>
-</header>
+  <div class="search-container">
+    <input type="text" id="search" placeholder="Search recipes...">
+    <select id="category">
+      <option value="">All Categories</option>
+      <option value="Breakfast">Breakfast</option>
+      <option value="Lunch">Lunch</option>
+      <option value="Dinner">Dinner</option>
+      <option value="Dessert">Dessert</option>
+    </select>
+  </div>
 
-<div class="page-strip">Explore Recipes</div>
+  <div class="filter-tags">
+    <button class="active">All</button>
+    <button>Vegetarian</button>
+    <button>Non-Veg</button>
+    <button>Quick</button>
+    <button>Healthy</button>
+  </div>
 
-<div class="search-container">
-  <input type="text" id="searchInput" placeholder="Search by recipe, ingredient, or tag...">
-  <select id="sortSelect">
-    <option value="a-z">A-Z</option>
-    <option value="popular">Most Popular</option>
-    <option value="quick">Quick to Cook</option>
-  </select>
-</div>
+  <div class="recipe-container" id="recipe-container">
+    <!-- Cards inserted via JS -->
+  </div>
 
-<div class="filter-tags">
-  <button class="active" data-type="all">All</button>
-  <button data-type="spicy">Spicy</button>
-  <button data-type="sweet">Sweet</button>
-  <button data-type="maharashtrian">Maharashtrian</button>
-  <button data-type="festive">Festive</button>
-  <button data-type="snack">Snack</button>
-</div>
+  <footer>
+    © 2025 Maha Recipe Hub | All Rights Reserved
+  </footer>
 
-<div id="status" style="text-align:center;">Loading recipes...</div>
-<div id="recipe-list" class="recipe-container"></div>
+  <script>
+    // 🧠 Dummy Recipes
+    const recipes = [
+      {
+        name: "Paneer Butter Masala",
+        desc: "Rich and creamy North Indian curry.",
+        img: "assets/paneer.jpg",
+        tags: ["Vegetarian", "Dinner"],
+      },
+      {
+        name: "Chicken Biryani",
+        desc: "Aromatic and flavorful rice dish.",
+        img: "assets/biryani.jpg",
+        tags: ["Non-Veg", "Lunch"],
+      },
+      {
+        name: "Oats Smoothie",
+        desc: "Healthy and refreshing breakfast.",
+        img: "assets/smoothie.jpg",
+        tags: ["Healthy", "Breakfast"],
+      },
+    ];
 
-<footer>© 2025 Maha Recipe Hub | Crafted with ❤️ for every flavor of Maharashtra</footer>
+    const container = document.getElementById("recipe-container");
+    recipes.forEach(r => {
+      const card = document.createElement("div");
+      card.className = "recipe-card";
+      card.innerHTML = `
+        <img src="${r.img}" alt="${r.name}">
+        <h3>${r.name}</h3>
+        <p>${r.desc}</p>
+        <div class="recipe-tags">
+          ${r.tags.map(t => `<span class='recipe-tag'>${t}</span>`).join("")}
+        </div>`;
+      container.appendChild(card);
+    });
 
-<script>
-const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // 🧑‍🍳 Profile Button Logic
+    const profileContainer = document.getElementById("profile-container");
+    const profileIcon = document.getElementById("profile-icon");
+    const profileCard = document.getElementById("profile-card");
+    const profileUsername = document.getElementById("profile-username");
+    const profileEmail = document.getElementById("profile-email");
+    const profilePhoto = document.getElementById("profile-photo");
+    const uploadPhoto = document.getElementById("upload-photo");
+    const changePhotoBtn = document.getElementById("change-photo-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const loginLink = document.getElementById("login-link");
 
-const recipeList = document.getElementById("recipe-list");
-const searchInput = document.getElementById("searchInput");
-const filterButtons = document.querySelectorAll(".filter-tags button");
-const sortSelect = document.getElementById("sortSelect");
-let recipes = [];
-let favorites = [];
-let currentFilter = "all";
+    let user = JSON.parse(localStorage.getItem("user"));
 
-async function loadRecipes() {
-  const { data, error } = await client.from("recipes").select("*");
-  const status = document.getElementById("status");
-  if (error) {
-    status.textContent = "Failed to load recipes.";
-    return;
-  }
-  status.style.display = "none";
-  recipes = data;
-  await loadFavorites();
-  renderRecipes(recipes);
-}
+    if (user) {
+      loginLink.style.display = "none";
+      profileContainer.style.display = "inline-block";
+      profileUsername.textContent = user.username;
+      profileEmail.textContent = user.email;
+      if (user.photo_url) {
+        profilePhoto.src = user.photo_url;
+        profileIcon.textContent = "";
+      } else {
+        profileIcon.textContent = user.username.charAt(0).toUpperCase();
+      }
+    }
 
-async function loadFavorites() {
-  const user = localStorage.getItem("username");
-  if (!user) return;
-  const { data } = await client.from("favorites").select("recipe_id").eq("user_id", user);
-  favorites = data ? data.map(f => f.recipe_id) : [];
-}
+    profileIcon?.addEventListener("click", () => {
+      profileCard.style.display = profileCard.style.display === "block" ? "none" : "block";
+    });
 
-function renderRecipes(list) {
-  recipeList.innerHTML = "";
-  if (list.length === 0) {
-    recipeList.innerHTML = "<p style='text-align:center;width:100%'>No recipes found!</p>";
-    return;
-  }
-
-  list.forEach((r, i) => {
-    const rank = i + 1;
-    const tags = `
-      <div class="recipe-tags">
-        <span class="recipe-tag">${r.category || "General"}</span>
-        <span class="recipe-tag">${r.type || "Food"}</span>
-      </div>`;
-    const isFav = favorites.includes(r.id);
-    const card = document.createElement("div");
-    card.className = "recipe-card";
-    card.innerHTML = `
-      <div class="rank-badge">#${rank}</div>
-      <img src="${r.image_url}">
-      <h3>${r.name}</h3>
-      ${tags}
-      <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
-      <div class="card-actions">
-        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${r.id}"><i class="fa${isFav ? 's' : 'r'} fa-heart"></i></button>
-        <button class="like-btn" data-id="${r.id}"><i class="fa fa-thumbs-up"></i> ${r.likes || 0}</button>
-      </div>`;
-    recipeList.appendChild(card);
-  });
-
-  document.querySelectorAll(".fav-btn").forEach(btn => btn.onclick = toggleFavorite);
-  document.querySelectorAll(".like-btn").forEach(btn => btn.onclick = addLike);
-}
-
-async function toggleFavorite(e) {
-  e.stopPropagation();
-  const recipeId = parseInt(e.currentTarget.dataset.id);
-  const user = localStorage.getItem("username");
-  if (!user) return alert("Please login first!");
-  const isFav = favorites.includes(recipeId);
-  if (isFav) {
-    await client.from("favorites").delete().eq("recipe_id", recipeId).eq("user_id", user);
-    favorites = favorites.filter(f => f !== recipeId);
-  } else {
-    await client.from("favorites").insert([{ recipe_id: recipeId, user_id: user }]);
-    favorites.push(recipeId);
-  }
-  renderRecipes(recipes);
-}
-
-async function addLike(e) {
-  e.stopPropagation();
-  const btn = e.currentTarget;
-  btn.classList.add("animate");
-  setTimeout(() => btn.classList.remove("animate"), 300);
-  const recipeId = parseInt(btn.dataset.id);
-  const recipe = recipes.find(r => r.id === recipeId);
-  recipe.likes = (recipe.likes || 0) + 1;
-  await client.from("recipes").update({ likes: recipe.likes }).eq("id", recipeId);
-  renderRecipes(recipes);
-}
-
-sortSelect.addEventListener("change", () => {
-  if (sortSelect.value === "quick") recipes.sort((a,b)=>a.time-b.time);
-  else if (sortSelect.value === "popular") recipes.sort((a,b)=>(b.likes||0)-(a.likes||0));
-  else recipes.sort((a,b)=>a.name.localeCompare(b.name));
-  renderRecipes(recipes);
-});
-
-const loginLink = document.getElementById("login-link");
-const logoutLink = document.getElementById("logout-link");
-const welcomeMsg = document.getElementById("welcome-msg");
-
-function checkLogin() {
-  const user = localStorage.getItem("username");
-  if (user) {
-    loginLink.style.display = "none";
-    welcomeMsg.style.display = "inline";
-    welcomeMsg.textContent = "Welcome, " + user;
-    logoutLink.style.display = "inline";
-  }
-}
-logoutLink.onclick = () => { localStorage.removeItem("username"); location.reload(); };
-checkLogin();
-
-loadRecipes();
-
-// 🌟 Profile dropdown toggle
-const profileLink = document.getElementById("profile-link");
-const profileMenu = document.getElementById("profile-menu");
-
-profileLink?.addEventListener("click", () => {
-  profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
-});
-
-document.addEventListener("click", (e) => {
-  if (!profileLink.contains(e.target) && !profileMenu.contains(e.target)) {
-    profileMenu.style.display = "none";
-  }
-});
-</script>
-
+    logoutBtn?.addEventListener("click", () => {
+      localStorage.removeItem("user");
+      location.reload();
+    });
+  </script>
 </body>
 </html>

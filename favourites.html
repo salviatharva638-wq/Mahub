@@ -73,8 +73,8 @@ footer { background:#333;color:white;padding:25px;text-align:center;margin-top:a
 </div>
 
 <main>
-  <div id="status" style="text-align:center;margin-top:25px;">Loading your favorite recipes...</div>
-  <div class="recipe-container" id="recipe-list"></div>
+   <div id="status" style="text-align:center;margin-top:20px;">Loading your favourites...</div>
+<div id="fav-list" class="recipe-list"></div>
 </main>
 
 <footer>&copy; 2025 Maha Recipe Hub</footer>
@@ -84,125 +84,73 @@ const SUPABASE_URL = "https://sraahdptzfbkrxrbllqx.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyYWFoZHB0emZia3J4cmJsbHF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NDczMjMsImV4cCI6MjA3NDEyMzMyM30.lJ6E8E70Mag1F7VC9jT7JLZqhcOX7oJBX20BhBWjZy0";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// LOGIN / PROFILE
-const loginLink = document.getElementById("login-link");
-const profileLink = document.getElementById("profile-link");
-const profileMenu = document.getElementById("profile-menu");
-const profileUsername = document.getElementById("profile-username");
-const logoutLink = document.getElementById("logout-link");
+const recipeList = document.getElementById("fav-list");
+const status = document.getElementById("status");
+const user = localStorage.getItem("username");
 
-function checkLogin(){
-  const user = localStorage.getItem("username");
-  if(user){
-    loginLink.style.display="none";
-    profileLink.style.display="flex";
-    profileUsername.textContent=user;
-  } else {
-    alert("Please login to see your favorites!");
-    window.location.href="login.html";
-  }
+if (!user) {
+  status.textContent = "Please login to view your favourites!";
+} else {
+  loadFavorites();
 }
 
-profileLink.addEventListener("click", ()=>{
-  profileMenu.style.display=profileMenu.style.display==="block"?"none":"block";
-});
+async function loadFavorites() {
+  // 1️⃣ Get favourite recipe IDs for this user
+  const { data: favs, error: favError } = await client
+    .from("favorites")
+    .select("recipe_id")
+    .eq("user_id", user);
 
-logoutLink.addEventListener("click", ()=>{
-  localStorage.removeItem("username");
-  checkLogin();
-  profileMenu.style.display="none";
-});
-
-checkLogin();
-
-// LOAD FAVORITE RECIPES
-const recipeList = document.getElementById("recipe-list");
-const searchInput = document.getElementById("searchInput");
-const sortSelect = document.getElementById("sortSelect");
-
-let recipes=[];
-
-async function loadFavorites(){
-  const user = localStorage.getItem("username");
-  const { data, error } = await client.from("recipes").select("*").contains("liked_by", [user]);
-  const status = document.getElementById("status");
-
-  if(error){
-    status.textContent="Failed to load favorites.";
+  if (favError) {
+    console.error("Error fetching favourites:", favError);
+    status.textContent = "Failed to load favourites.";
     return;
   }
 
-  if(!data || data.length===0){
-    status.textContent="You haven’t liked any recipes yet!";
+  if (!favs || favs.length === 0) {
+    status.textContent = "No favourites yet!";
     return;
   }
 
-  status.style.display="none";
-  recipes=data;
-  renderRecipes(data);
+  const recipeIds = favs.map(f => f.recipe_id);
+
+  // 2️⃣ Fetch the actual recipes
+  const { data: recipes, error: recipeError } = await client
+    .from("recipes")
+    .select("*")
+    .in("id", recipeIds);
+
+  if (recipeError) {
+    console.error("Error fetching recipes:", recipeError);
+    status.textContent = "Failed to load recipes.";
+    return;
+  }
+
+  status.style.display = "none";
+  renderFavorites(recipes);
 }
 
-function renderRecipes(list){
-  recipeList.innerHTML="";
-  list.forEach(r=>{
-    const tags = r.type ? r.type.split(",").map(t=>`<span class='recipe-tag'>${t.trim()}</span>`).join("") : "";
-    const card=document.createElement("div");
-    card.className="recipe-card";
-    const heartColor="red";
-
-    card.innerHTML=`
-      <img src="${r.image_url}">
+// 3️⃣ Render favourite recipes
+function renderFavorites(list) {
+  recipeList.innerHTML = "";
+  list.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "recipe-card";
+    card.innerHTML = `
+      <img src="${r.image_url}" alt="${r.name}">
       <h3>${r.name}</h3>
-      <div class="recipe-tags">${tags}</div>
-      <p>${r.description ? r.description.slice(0,80)+"..." : ""}</p>
-      <div style="margin-bottom:10px;">
-        <i class="fas fa-heart like-btn" style="color:${heartColor};cursor:pointer;margin-right:5px;"></i>
-        <span class="likes-count">${r.likes||0}</span>
+      <div class="recipe-tags">
+        <span>${r.category || "General"}</span>
+        <span>${r.type || "Food"}</span>
+      </div>
+      <p>${r.description ? r.description.slice(0, 80) + "..." : ""}</p>
+      <div class="card-actions">
+        <button class="like-btn"><i class="fa fa-thumbs-up"></i> ${r.likes || 0}</button>
       </div>
     `;
-
-    const heart=card.querySelector(".like-btn");
-    heart.addEventListener("click",async(e)=>{
-      e.stopPropagation();
-      const user=localStorage.getItem("username");
-      if(!user)return;
-      heart.classList.add("animate");
-      setTimeout(()=>heart.classList.remove("animate"),300);
-
-      let newLikes=r.likes||0;
-      let newLikedBy=r.liked_by||[];
-      newLikes-=1;
-      newLikedBy=newLikedBy.filter(u=>u!==user);
-
-      const { error }=await client.from("recipes").update({likes:newLikes,liked_by:newLikedBy}).eq("id",r.id);
-      if(error){alert("Failed to unlike.");return;}
-
-      card.remove();
-      if(document.querySelectorAll(".recipe-card").length===0){
-        recipeList.innerHTML="<p style='width:100%;text-align:center;'>No favorites yet.</p>";
-      }
-    });
-
-    card.onclick=()=>window.location.href=`recipe-detail.html?id=${r.id}`;
     recipeList.appendChild(card);
   });
 }
-
-searchInput.addEventListener("input",filterRecipes);
-sortSelect.addEventListener("change",filterRecipes);
-
-function filterRecipes(){
-  const searchTerm=searchInput.value.toLowerCase();
-  let filtered=recipes.filter(r=>r.name.toLowerCase().includes(searchTerm));
-  const sortValue=sortSelect.value;
-  if(sortValue==="a-z")filtered.sort((a,b)=>a.name.localeCompare(b.name));
-  if(sortValue==="time")filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(sortValue==="popular")filtered.sort((a,b)=>(b.likes||0)-(a.likes||0));
-  renderRecipes(filtered);
-}
-
-loadFavorites();
 </script>
-
 </body>
 </html>
